@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Shop</title>
-</head>
-<body>
+{% extends 'shopapp/base.html' %}
+{% block title %}Shop{% endblock %}
+
+{% block body %}
 <h1>Shop dashboard: {{ date }}</h1>
-</body>
-</html>
+<div>{% lorem 3 p random %}</div>
+    <ul>
+    {% for name, price in prod %}
+    <li>
+        {{ name }} - {{ price }}$
+        {% if name|length == 7 %}
+            <span>super product!</span>
+        {% endif %}
+    </li>
+    {% empty %}
+        No products
+    {% endfor %}
+    </ul>
+{% endblock %}

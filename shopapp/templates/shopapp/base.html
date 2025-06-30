@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Title{% endblock %}</title>
+</head>
+<body style="background: #bbb">
+{% block body %}Body{% endblock %}
+{% now 'H:i:s' as cur_time %}
+{{ cur_time }}
+</body>
+</html>

@@ -1,0 +1,22 @@
+{% extends 'shopapp/base.html' %}
+
+{% block title %}Group list{% endblock %}
+
+{% block body %}
+<h1>Groups:</h1>
+    <ul>
+    {% for g in list %}
+        <li>{{ g.name }}
+            <ul>
+                {% for p in g.permissions.all %}
+                <li>{{ p }}</li>
+                {% empty %}
+                    Permissions is empty
+                {% endfor %}
+            </ul>
+        </li>
+    {% empty %}
+        List is empty
+    {% endfor %}
+    </ul>
+{% endblock %}
