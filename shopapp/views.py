@@ -17,5 +17,5 @@ def group_list(request: HttpRequest) -> HttpResponse:
     return render(request, 'shopapp/group-list.html', ctx)
 
 def product_list(request: HttpRequest) -> HttpResponse:
-    ctx = {'list': Product.objects.prefetch_related('permissions').all()}
+    ctx = {'list': Product.objects.all()}
     return render(request, 'shopapp/product-list.html', ctx)
