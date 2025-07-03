@@ -13,6 +13,13 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def short_desc(self):
+        return self.description if len(self.description) < 48 else f'{self.description[:48]}...'
+
+    def __str__(self):
+        return self.name
+
 class Order(models.Model):
     class Meta:
         ordering = ['-id']
