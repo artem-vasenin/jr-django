@@ -1,0 +1,35 @@
+{% extends 'shopapp/base.html' %}
+
+{% block title %}Orders list{% endblock %}
+
+{% block body %}
+<h1>Orders:</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Address</th>
+            <th>Promo</th>
+            <th>User</th>
+            <th>Products</th>
+        </tr>
+        </thead>
+    {% for g in list %}
+        <tbody>
+            <tr>
+                <td>{{ g.delivery_address }}</td>
+                <td>{% firstof g.promo_code '---' %}</td>
+                <td>{% firstof g.user.first_name g.user.username %}</td>
+                <td>
+                    {% for p in g.products.all %}
+                        <p>{{ p.name }}</p>
+                    {% empty %}
+                        not products
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    {% empty %}
+        List is empty
+    {% endfor %}
+    </table>
+{% endblock %}

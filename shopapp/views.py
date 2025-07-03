@@ -4,7 +4,7 @@ from datetime import datetime
 
 from django.shortcuts import render
 
-from shopapp.models import Product
+from shopapp.models import Product, Order
 
 
 def shop_index(request: HttpRequest) -> HttpResponse:
@@ -19,3 +19,7 @@ def group_list(request: HttpRequest) -> HttpResponse:
 def product_list(request: HttpRequest) -> HttpResponse:
     ctx = {'list': Product.objects.all()}
     return render(request, 'shopapp/product-list.html', ctx)
+
+def order_list(request: HttpRequest) -> HttpResponse:
+    ctx = {'list': Order.objects.select_related('user').prefetch_related('products').all()}
+    return render(request, 'shopapp/order-list.html', ctx)
