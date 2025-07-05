@@ -1,0 +1,10 @@
+{% extends 'reqapp/base.html' %}
+
+{% block title %}Request Page{% endblock %}
+
+{% block body %}
+    <h1>Request Page</h1>
+    <p>Method - {{ request.method }}</p>
+    <p>Param name - {% firstof request.GET.name 'Unknown' %}</p>
+    <p>Full_name - {{ full_name }}</p>
+{% endblock %}
