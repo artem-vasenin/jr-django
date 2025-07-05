@@ -3,6 +3,7 @@ from django.http import HttpRequest
 from django.db.models import QuerySet
 
 from .models import Product, Order
+from .admin_mixins import ExportCsvMixin
 
 @admin.action(description='Archive products')
 def make_archive(modeladmin: admin.ModelAdmin, request: HttpRequest, queryset: QuerySet):
@@ -12,12 +13,12 @@ def make_archive(modeladmin: admin.ModelAdmin, request: HttpRequest, queryset: Q
 def make_unarchive(modeladmin: admin.ModelAdmin, request: HttpRequest, queryset: QuerySet):
     queryset.update(archived=False)
 
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(admin.ModelAdmin, ExportCsvMixin):
     list_display = 'pk', 'name', 'price', 'short_desc', 'discount', 'archived'
     list_display_links = 'pk', 'name'
     ordering = ('-created_at',)
     search_fields = ('name', 'description')
-    actions = [make_archive, make_unarchive]
+    actions = [make_archive, make_unarchive, 'export_csv']
     fieldsets = [
         (None, {'fields': ['name', 'description']}),
         ('Price', {'fields': ['price', 'discount'], 'description': 'Поля относящиеся к стоимости'}),
