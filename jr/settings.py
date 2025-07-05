@@ -50,6 +50,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # custom middlewares
+    'reqapp.middlewares.set_useragent_mw',
+    'reqapp.middlewares.CountRequestMW',
 ]
 
 ROOT_URLCONF = 'jr.urls'
