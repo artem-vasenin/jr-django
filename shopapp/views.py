@@ -1,6 +1,8 @@
+from django.core.files.storage.filesystem import FileSystemStorage
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth.models import Group
 from datetime import datetime
+import os
 
 from django.shortcuts import render, redirect, reverse
 
@@ -27,9 +29,15 @@ def order_list(request: HttpRequest) -> HttpResponse:
 
 def product_form(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            Product.objects.create(**form.cleaned_data)
+            data = {**form.cleaned_data}
+            del data["image"]
+            product = Product.objects.create(**data)
+            file = request.FILES.get('image')
+            fs = FileSystemStorage(location=os.path.join('shopapp', 'files'))
+            fs.save(f'{product.pk}_{file.name}', file)
+
             return redirect(reverse('shopapp:product_list'))
     else:
         form = ProductForm()
