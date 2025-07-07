@@ -4,8 +4,8 @@ from datetime import datetime
 from django.core.files.storage.filesystem import FileSystemStorage
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth.models import Group
-from django.shortcuts import render, redirect, reverse, get_object_or_404
-from django.views import View
+from django.shortcuts import render, redirect, reverse
+from django.views.generic import View, ListView, DetailView
 
 from shopapp.models import Product, Order
 from .forms import ProductForm
@@ -17,26 +17,25 @@ class ShopIndexView(View):
         ctx = {"date": datetime.now(), "prod": prod}
         return render(request, 'shopapp/index.html', ctx)
 
-class GroupListView(View):
-    def get(self, request: HttpRequest) -> HttpResponse:
-        ctx = {'list': Group.objects.prefetch_related('permissions').all()}
-        return render(request, 'shopapp/group-list.html', ctx)
+class GroupListView(ListView):
+    template_name = 'shopapp/group-list.html'
+    queryset = Group.objects.prefetch_related('permissions').all()
+    context_object_name = 'list'
 
-class OrderListView(View):
-    def get(self, request: HttpRequest) -> HttpResponse:
-        ctx = {'list': Order.objects.select_related('user').prefetch_related('products').all()}
-        return render(request, 'shopapp/order-list.html', ctx)
+class OrderListView(ListView):
+    # template_name = 'shopapp/order-list.html' # shopapp/order_list.html по умолчанию
+    queryset = Order.objects.select_related('user').prefetch_related('products')
+    # context_object_name = 'list' # object_list по умолчанию
 
-class ProductListView(View):
-    def get(self, request: HttpRequest) -> HttpResponse:
-        ctx = {'list': Product.objects.all()}
-        return render(request, 'shopapp/product-list.html', ctx)
+class ProductListView(ListView):
+    template_name = 'shopapp/product-list.html'
+    model = Product
+    context_object_name = 'list'
 
-class ProductDetailsView(View):
-    def get(self, request: HttpRequest, pk: int) -> HttpResponse:
-        product = get_object_or_404(Product, pk=pk)
-        ctx = {'product': product}
-        return render(request, 'shopapp/product-details.html', ctx)
+class ProductDetailsView(DetailView):
+    template_name = 'shopapp/product-details.html'
+    model = Product
+    context_object_name = 'product'
 
 class ProductFormView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
