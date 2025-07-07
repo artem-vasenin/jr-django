@@ -1,10 +1,11 @@
 {% extends 'shopapp/base.html' %}
 
-{% block title %}Products list{% endblock %}
+{% block title %}Product details{% endblock %}
 
 {% block body %}
-<h1>Products:</h1>
+<h1>Product #{{ product.pk }}:</h1>
     <div><a href="{% url 'shopapp:product_form' %}">Add new</a></div>
+    <div><a href="{% url 'shopapp:product_list' %}">To list</a></div>
     <table>
         <thead>
         <tr>
@@ -14,17 +15,13 @@
             <th>Date</th>
         </tr>
         </thead>
-    {% for g in list %}
         <tbody>
             <tr>
-                <td><a href="{% url 'shopapp:product_details' pk=g.pk %}">{{ g.name }}</a></td>
-                <td>{{ g.price }}$</td>
-                <td>{% firstof g.discount '---' %}</td>
-                <td>{{ g.created_at }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}$</td>
+                <td>{% firstof product.discount '---' %}</td>
+                <td>{{ product.created_at }}</td>
             </tr>
         </tbody>
-    {% empty %}
-        List is empty
-    {% endfor %}
     </table>
 {% endblock %}

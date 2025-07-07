@@ -1,13 +1,14 @@
 from django.urls import path
 
-from .views import shop_index, group_list, product_list, order_list, product_form
+from .views import GroupListView, ProductListView, OrderListView, ProductFormView, ShopIndexView, ProductDetailsView
 
 app_name = 'shopapp'
 
 urlpatterns = [
-    path('', shop_index, name='shop_index'),
-    path('groups', group_list, name='group_list'),
-    path('products', product_list, name='product_list'),
-    path('product', product_form, name='product_form'),
-    path('orders', order_list, name='order_list'),
+    path('', ShopIndexView.as_view(), name='shop_index'),
+    path('groups/', GroupListView.as_view(), name='group_list'),
+    path('orders/', OrderListView.as_view(), name='order_list'),
+    path('products/', ProductListView.as_view(), name='product_list'),
+    path('product/', ProductFormView.as_view(), name='product_form'),
+    path('product/<int:pk>/', ProductDetailsView.as_view(), name='product_details'),
 ]
