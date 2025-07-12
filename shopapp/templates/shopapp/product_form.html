@@ -1,11 +1,11 @@
 {% extends 'shopapp/base.html' %}
-{% block title %}Product form{% endblock %}
+{% block title %}Product Form{% endblock %}
 {% block body %}
-    <h1>Product form</h1>
+    <h1>Product Form</h1>
     <div><a href="{% url 'shopapp:product_list' %}">Products list</a></div>
-    <form method="post" enctype="multipart/form-data">
+    <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Submit</button>
+    <button type="submit">Save</button>
     </form>
 {% endblock %}

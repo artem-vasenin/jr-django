@@ -1,14 +1,13 @@
-import os
 from datetime import datetime
 
-from django.core.files.storage.filesystem import FileSystemStorage
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth.models import Group
-from django.shortcuts import render, redirect, reverse
-from django.views.generic import View, ListView, DetailView
+from django.http.response import HttpResponseRedirect
+from django.shortcuts import render, reverse
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 
 from shopapp.models import Product, Order
-from .forms import ProductForm
 
 
 class ShopIndexView(View):
@@ -23,34 +22,40 @@ class GroupListView(ListView):
     context_object_name = 'list'
 
 class OrderListView(ListView):
-    # template_name = 'shopapp/order-list.html' # shopapp/order_list.html по умолчанию
     queryset = Order.objects.select_related('user').prefetch_related('products')
-    # context_object_name = 'list' # object_list по умолчанию
 
 class ProductListView(ListView):
     template_name = 'shopapp/product-list.html'
-    model = Product
+    # model = Product
     context_object_name = 'list'
+    queryset = Product.objects.filter(archived=False)
 
 class ProductDetailsView(DetailView):
     template_name = 'shopapp/product-details.html'
     model = Product
     context_object_name = 'product'
 
-class ProductFormView(View):
-    def get(self, request: HttpRequest) -> HttpResponse:
-        form = ProductForm()
-        ctx = {'form': form}
-        return render(request, 'shopapp/product-form.html', ctx)
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ['name', 'price', 'description', 'discount']
+    success_url = reverse_lazy('shopapp:product_list')
 
-    def post(self, request: HttpRequest) -> HttpResponse:
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            data = {**form.cleaned_data}
-            del data["image"]
-            product = Product.objects.create(**data)
-            file = request.FILES.get('image')
-            fs = FileSystemStorage(location=os.path.join('shopapp', 'files'))
-            fs.save(f'{product.pk}_{file.name}', file)
+class ProductUpdateView(UpdateView):
+    model = Product
+    fields = ['name', 'price', 'description', 'discount']
 
-        return redirect(reverse('shopapp:product_list'))
+    def get_success_url(self):
+        return reverse(
+            'shopapp:product_details',
+            kwargs={'pk': self.object.pk}
+        )
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('shopapp:product_list')
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        self.object.archived = True
+        self.object.save()
+        return HttpResponseRedirect(success_url)

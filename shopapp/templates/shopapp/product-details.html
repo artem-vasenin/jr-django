@@ -5,7 +5,9 @@
 {% block body %}
 <h1>Product #{{ product.pk }}:</h1>
     <div><a href="{% url 'shopapp:product_form' %}">Add new</a></div>
+    <div><a href="{% url 'shopapp:product_update' product.pk %}">Update</a></div>
     <div><a href="{% url 'shopapp:product_list' %}">To list</a></div>
+    <div><a href="{% url 'shopapp:product_delete' product.pk %}">Delete</a></div>
     <table>
         <thead>
         <tr>
