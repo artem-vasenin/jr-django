@@ -19,3 +19,12 @@ class IndexView(View):
             return redirect('/shop/products')
 
         return render(request, 'my_auth/login.html', {'error': 'User is not found'})
+
+def set_cookie_view(_: HttpRequest) -> HttpResponse:
+    res = HttpResponse('Added COOKIES')
+    res.set_cookie('name', 'Rusich', max_age=3600)
+    return res
+
+def get_cookies_view(request: HttpRequest) -> HttpResponse:
+    res = request.COOKIES.get('name', 'Default Name')
+    return HttpResponse(f'{res}')
