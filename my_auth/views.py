@@ -28,3 +28,12 @@ def set_cookie_view(_: HttpRequest) -> HttpResponse:
 def get_cookies_view(request: HttpRequest) -> HttpResponse:
     res = request.COOKIES.get('name', 'Default Name')
     return HttpResponse(f'{res}')
+
+def set_session_view(request: HttpRequest) -> HttpResponse:
+    res = HttpResponse('Added SESSION')
+    request.session['area'] = 'Manjak'
+    return res
+
+def get_session_view(request: HttpRequest) -> HttpResponse:
+    res = request.session.get('area', 'Unknown area')
+    return HttpResponse(res)
