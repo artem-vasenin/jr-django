@@ -5,6 +5,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import TemplateView, CreateView, View
 from django.urls import reverse_lazy
 
+from .models import Profile
+
 class IndexView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         if request.user.is_authenticated:
@@ -29,6 +31,7 @@ class RegView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
+        Profile.objects.create(user=self.object)
         user = authenticate(
             self.request,
             username=form.cleaned_data.get('username'),

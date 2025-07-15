@@ -8,6 +8,8 @@
         <p>First name: {{ user.first_name }}</p>
         <p>Last name: {{ user.last_name }}</p>
         <p>Email: {{ user.email }}</p>
+        <p>Bio: {{ user.profile.bio }}</p>
+        <p>Sex: {{ user.profile.sex }}</p>
     {% else %}
         <h3>Unknown user</h3>
     {% endif %}
