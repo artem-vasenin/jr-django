@@ -1,7 +1,9 @@
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.views import View
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic import TemplateView, CreateView, View
+from django.urls import reverse_lazy
 
 class IndexView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
@@ -19,6 +21,28 @@ class IndexView(View):
             return redirect('/shop/products')
 
         return render(request, 'my_auth/login.html', {'error': 'User is not found'})
+
+class RegView(CreateView):
+    form_class = UserCreationForm
+    template_name = 'my_auth/reg.html'
+    success_url = reverse_lazy('my_auth:about')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        user = authenticate(
+            self.request,
+            username=form.cleaned_data.get('username'),
+            password=form.cleaned_data.get('password1'),
+        )
+        login(self.request, user=user)
+        return response
+
+class AboutView(TemplateView):
+    template_name = 'my_auth/about.html'
+
+def logout_view(request: HttpRequest) -> HttpResponse:
+    logout(request)
+    return redirect('/auth/login')
 
 def set_cookie_view(_: HttpRequest) -> HttpResponse:
     res = HttpResponse('Added COOKIES')

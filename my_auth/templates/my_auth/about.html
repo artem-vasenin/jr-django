@@ -1,0 +1,14 @@
+{% extends 'my_auth/base.html' %}
+{% block title %}About me{% endblock %}
+{% block body %}
+    <h1>User info</h1>
+    {% if user.is_authenticated %}
+        <h3>Details</h3>
+        <p>Username: {{ user.username }}</p>
+        <p>First name: {{ user.first_name }}</p>
+        <p>Last name: {{ user.last_name }}</p>
+        <p>Email: {{ user.email }}</p>
+    {% else %}
+        <h3>Unknown user</h3>
+    {% endif %}
+{% endblock %}

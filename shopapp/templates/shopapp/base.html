@@ -5,6 +5,7 @@
     <title>{% block title %}Title{% endblock %}</title>
 </head>
 <body style="background: #bbb">
+<a href="{% url 'my_auth:auth_logout' %}">Logout</a>
 {% block body %}Body{% endblock %}
 </body>
 </html>
