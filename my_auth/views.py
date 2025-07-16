@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView, CreateView, View
 from django.urls import reverse_lazy
 
@@ -43,6 +44,7 @@ class RegView(CreateView):
 class AboutView(TemplateView):
     template_name = 'my_auth/about.html'
 
+@login_required
 def logout_view(request: HttpRequest) -> HttpResponse:
     logout(request)
     return redirect('/auth/login')

@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth.models import Group
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, reverse
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -24,7 +25,7 @@ class GroupListView(ListView):
 class OrderListView(ListView):
     queryset = Order.objects.select_related('user').prefetch_related('products')
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     template_name = 'shopapp/product-list.html'
     # model = Product
     context_object_name = 'list'
