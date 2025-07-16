@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth.models import Group
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, reverse
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -22,7 +22,8 @@ class GroupListView(ListView):
     queryset = Group.objects.prefetch_related('permissions').all()
     context_object_name = 'list'
 
-class OrderListView(ListView):
+class OrderListView(PermissionRequiredMixin, ListView):
+    permission_required = ['shopapp.view_order']
     queryset = Order.objects.select_related('user').prefetch_related('products')
 
 class ProductListView(LoginRequiredMixin, ListView):
@@ -31,7 +32,9 @@ class ProductListView(LoginRequiredMixin, ListView):
     context_object_name = 'list'
     queryset = Product.objects.filter(archived=False)
 
-class ProductDetailsView(DetailView):
+class ProductDetailsView(UserPassesTestMixin, DetailView):
+    def test_func(self):
+        return self.request.user.groups.filter(name='some-group').exists()
     template_name = 'shopapp/product-details.html'
     model = Product
     context_object_name = 'product'
