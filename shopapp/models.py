@@ -29,5 +29,6 @@ class Order(models.Model):
     status = models.CharField(max_length=20, null=False, default="Pending")
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     products = models.ManyToManyField(Product, related_name="orders")
+    receipt = models.FileField(null=True, upload_to='orders/receipts/')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
