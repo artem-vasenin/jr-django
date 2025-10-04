@@ -20,7 +20,9 @@
 
 {% block body %}Body{% endblock %}
 
-{% include 'parts/footer.html' %}
+{% block footer %}
+    {% include 'parts/footer.html' %}
+{% endblock %}
 <!-- JS -->
 <script src="{% static '/js/main.js' %}"></script>
 </body>
