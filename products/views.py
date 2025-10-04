@@ -7,6 +7,10 @@ class HomeView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         return render(request, 'products/index.html')
 
+class GuidesView(View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        return render(request, 'products/guides.html')
+
 class DetailsView(View):
     # def get(self, request: HttpRequest, pk: int) -> HttpResponse:
     def get(self, request, pk) -> HttpResponse:

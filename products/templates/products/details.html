@@ -1,4 +1,5 @@
 {% extends 'base/index.html' %}
+{% load static %}
 
 {% block title %}Products{% endblock %}
 
@@ -8,7 +9,7 @@
     <!-- Product Info Section -->
     <section class="product-details-section">
       <div class="product-image-container">
-        <img src="../static/img/products/caramel_malt.jpg" alt="Caramel Malt 60L" class="product-image">
+        <img src="{% static '/img/tmp.jpg' %}" alt="Caramel Malt 60L" class="product-image">
       </div>
       <div class="product-info-column">
         <div class="product-title-price">

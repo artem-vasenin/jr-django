@@ -24,7 +24,7 @@ from products.views import HomeView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('reviews/', include('reviews.urls')),
+    path('management/', include('management.urls')),
     path('products/', include('products.urls')),
     path('orders/', include('orders.urls')),
     path('', HomeView.as_view(), name='home'),

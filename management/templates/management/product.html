@@ -1,0 +1,67 @@
+{% extends 'base/index.html' %}
+
+{% block title %}Reviews{% endblock %}
+
+{% block body %}
+    <main class="admin-page-wrapper">
+    <div class="admin-container">
+        <!-- Tabs Navigation -->
+        <div class="admin-tabs">
+            <a href="{% url 'management-products' %}" class="admin-tab">Product Management</a>
+            <a href="{% url 'management' %}" class="admin-tab active">Dashboard</a>
+        </div>
+
+        <!-- Content Area -->
+        <div class="admin-content">
+            <h1 class="admin-content__title">Admin - Product Stock</h1>
+
+            <div class="admin-form-layout">
+                <div class="admin-form-col-left">
+                    <h2 class="admin-form-section-title">Control</h2>
+                    <div class="image-upload-card">
+                        <div class="image-upload-placeholder">
+                            <i class="fa-regular fa-image"></i>
+                        </div>
+                        <input type="file" id="image-upload-input" class="is-hidden" accept="image/*">
+                        <button type="button" class="button button--primary upload-btn" id="upload-image-btn">Upload Image</button>
+                    </div>
+                </div>
+
+                <div class="admin-form-col-right">
+                    <h2 class="admin-form-section-title">Information</h2>
+                    <form id="product-form" class="product-info-form">
+                        <div class="checkout-form-group">
+                            <label for="prod-title">Title</label>
+                            <input type="text" id="prod-title" class="Input" placeholder="Value">
+                        </div>
+                        <div class="checkout-form-group">
+                            <label for="prod-description">description</label>
+                            <textarea id="prod-description" class="Textarea" placeholder="Value" rows="4"></textarea>
+                        </div>
+                        <div class="checkout-form-group">
+                            <label for="prod-price">price</label>
+                            <input type="text" id="prod-price" class="Input" placeholder="Value">
+                        </div>
+                        <div class="checkout-form-group">
+                            <label>category</label>
+                            <div class="category-tags">
+                                <button type="button" class="category-tag active">Label</button>
+                                <button type="button" class="category-tag">Label</button>
+                                <button type="button" class="category-tag">Label</button>
+                                <button type="button" class="category-tag">Label</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Control buttons -->
+                <div class="admin-form-actions">
+                    <button type="submit" form="product-form" class="button button--primary">Save</button>
+                    <button type="button" class="button button--secondary">Hide</button>
+                    <button type="button" class="button button--danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
