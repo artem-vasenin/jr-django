@@ -1,5 +1,5 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render
+from django.http import HttpResponse, HttpRequest
 
-
-def index(req):
-    return HttpResponse(req, 'Products')
+def index(request: HttpRequest) -> HttpResponse:
+    return render(request, 'products/index.html')
