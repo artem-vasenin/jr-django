@@ -16,6 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.global_settings import MEDIA_ROOT, MEDIA_URL, DEBUG
+from django.conf.urls.static import static
+
+from products.views import HomeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,4 +27,8 @@ urlpatterns = [
     path('reviews/', include('reviews.urls')),
     path('products/', include('products.urls')),
     path('orders/', include('orders.urls')),
+    path('', HomeView.as_view(), name='home'),
 ]
+
+if DEBUG:
+    urlpatterns.extend(static(MEDIA_URL, document_root=MEDIA_ROOT))
