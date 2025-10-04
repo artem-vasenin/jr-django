@@ -14,14 +14,19 @@
         <h1 class="auth-title">Sign In</h1>
       </div>
 
-      <form class="auth-form" id="login-form">
+      <form class="auth-form" id="login-form" method="post">
+        {% csrf_token %}
+        {% for error in form.non_field_errors %}
+          <div class="error">{{ error }}</div>
+        {% endfor %}
+
         <div class="InputField">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" class="Input" placeholder="Value" required>
+          {{ form.email }}
         </div>
         <div class="InputField">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" class="Input" placeholder="Value" required>
+          {{ form.password }}
         </div>
 
         <div class="ButtonGroup">

@@ -783,7 +783,6 @@ footer {
 ========================================
 */
 .header__user-actions {
-    display: none;
     align-items: center;
     gap: 24px;
 }
@@ -812,20 +811,13 @@ footer {
 ========================================
 */
 
-body:not(.user-logged-in) .header__user-actions {
-    display: none;
-}
-body:not(.user-logged-in) .header__auth-buttons {
+.header__auth-buttons {
     display: flex;
 }
 
-body.user-logged-in .header__auth-buttons {
-    display: none;
-}
-body.user-logged-in .header__user-actions {
+.header__user-actions {
     display: flex;
 }
-
 
 /*
 ========================================
@@ -1979,4 +1971,12 @@ body.user-logged-in .header__user-actions {
 .static-page-content .button {
     height: 44px;
     padding: 0 32px;
+}
+
+.error {
+    background: rgba(255, 0, 0, 0.2);
+    border: 1px solid red;
+    color: red;
+    border-radius: 4px;
+    padding: 4px 8px;
 }

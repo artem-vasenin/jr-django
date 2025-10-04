@@ -14,11 +14,8 @@
         <li><a href="#">Contact</a></li>
       </ul>
     </nav>
-    <div class="header__auth-buttons" id="auth-guest">
-      <a href="{% url 'login' %}" class="button button--secondary">Sign in</a>
-      <a href="{% url 'register' %}" class="button button--primary">Register</a>
-    </div>
-    <div class="header__user-actions" id="auth-user">
+    {% if user.is_authenticated %}
+    <div class="header__user-actions">
       <a href="{% url 'account' %}" class="user-icon" aria-label="My Account">
         <img src="{% static '/img/icons/User_alt.svg' %}" alt="User Account">
       </a>
@@ -26,5 +23,11 @@
         <img src="{% static '/img/icons/Shopping_bag.svg' %}" alt="Shopping Cart">
       </a>
     </div>
+    {% else %}
+    <div class="header__auth-buttons">
+      <a href="{% url 'login' %}" class="button button--secondary">Sign in</a>
+      <a href="{% url 'register' %}" class="button button--primary">Register</a>
+    </div>
+    {% endif %}
   </div>
 </header>
