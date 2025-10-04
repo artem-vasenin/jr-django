@@ -14,3 +14,7 @@ class RegisterView(View):
 class ForgotView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         return render(request, 'accounts/forgot-password-form.html')
+
+class AccountView(View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        return render(request, 'accounts/account.html')
