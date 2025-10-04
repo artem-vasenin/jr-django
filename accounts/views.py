@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpRequest
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
-from .forms import UserLoginForm, RegisterForm
+from .forms import UserLoginForm, RegisterForm, AccountForm
 from .mixins import AnonymousRequiredMixin
 
 
@@ -83,5 +83,50 @@ class ForgotView(View):
 
 
 class AccountView(View):
+    template_name = 'accounts/account.html'
+
     def get(self, request: HttpRequest) -> HttpResponse:
-        return render(request, 'accounts/account.html')
+        user = request.user
+        profile = user.profile if user else None
+        initial = {
+            'first_name': getattr(user, 'first_name', ''),
+            'last_name': getattr(user, 'last_name', ''),
+            'email': user.email,
+            'phone': getattr(profile, 'phone', ''),
+            'city': getattr(profile, 'city', ''),
+            'address': getattr(profile, 'address', ''),
+        }
+        form = AccountForm(initial=initial)
+
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        form = AccountForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
+            email = form.cleaned_data.get('email')
+            phone = form.cleaned_data.get('phone')
+            city = form.cleaned_data.get('city')
+            address = form.cleaned_data.get('address')
+
+            user_with_email = User.objects.get(email=email)
+            user_with_phone = User.objects.get(profile__phone=phone)
+
+            if user_with_email and not user_with_email.pk == request.user.pk:
+                form.add_error(None, 'Такой email уже занят')
+                return render(request, self.template_name, {'form': form})
+
+            if user_with_phone and not user_with_phone.pk == request.user.pk:
+                form.add_error(None, 'Такой телефон уже занят')
+                return render(request, self.template_name, {'form': form})
+
+            request.user.first_name = first_name
+            request.user.last_name = last_name
+            request.user.email = email
+            request.user.profile.phone = phone
+            request.user.profile.city = city
+            request.user.profile.address = address
+            request.user.save()
+
+        return render(request, self.template_name, {'form': form})

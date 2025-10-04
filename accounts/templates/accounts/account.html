@@ -8,14 +8,56 @@
   <div class="account-container">
     <!-- Tabs Navigation -->
     <div class="account-tabs">
-      <button class="account-tab active" data-tab-target="#order-history">Order History</button>
-      <button class="account-tab" data-tab-target="#account-info">Account Information</button>
+        <button class="account-tab active" data-tab-target="#account-info">Account Information</button>
+        <button class="account-tab" data-tab-target="#order-history">Order History</button>
     </div>
 
     <!-- Tabs Content -->
     <div class="tab-content">
+
+      <!-- Account Information Panel -->
+      <div id="account-info" class="tab-pane active">
+        <div class="account-form-container">
+          <h2 class="account-form-title">Personal Info</h2>
+          <form id="account-info-form" method="post">
+            {% csrf_token %}
+            {% for error in form.non_field_errors %}
+              <div class="error">{{ error }}</div>
+            {% endfor %}
+
+            <div class="checkout-form-group">
+              <label for="first_name">First Name</label>
+              {{ form.first_name }}
+            </div>
+            <div class="checkout-form-group">
+              <label for="last_name">Last Name</label>
+              {{ form.last_name }}
+            </div>
+            <div class="checkout-form-group">
+              <label for="phone">Phone</label>
+              {{ form.phone }}
+            </div>
+            <div class="checkout-form-group">
+              <label for="email">Email</label>
+              {{ form.email }}
+            </div>
+            <div class="checkout-form-group">
+              <label for="coty">City</label>
+              {{ form.city }}
+            </div>
+            <div class="checkout-form-group">
+              <label for="address">Shipping address</label>
+              {{ form.address }}
+            </div>
+
+            <button type="submit" class="button button--primary button--full-width">Save</button>
+            <a href="{% url 'logout' %}" class="button button--secondary button--full-width">Logout</a>
+          </form>
+        </div>
+      </div>
+
       <!-- Order History Panel -->
-      <div id="order-history" class="tab-pane active">
+      <div id="order-history" class="tab-pane">
         <div class="order-history-table">
           <!-- Table Header -->
           <div class="order-table-header">
@@ -132,38 +174,6 @@
           <a href="#" class="pagination-link-account">Next →</a>
         </div>
       </div>
-
-      <!-- Account Information Panel -->
-      <div id="account-info" class="tab-pane">
-        <div class="account-form-container">
-          <h2 class="account-form-title">Personal Info</h2>
-          <form id="account-info-form">
-            <div class="checkout-form-group">
-              <label for="acc-full-name">Full Name</label>
-              <input type="text" id="acc-full-name" name="full_name" class="Input" placeholder="Value" required>
-            </div>
-            <div class="checkout-form-group">
-              <label for="acc-phone">Phone number</label>
-              <input type="tel" id="acc-phone" name="phone" class="Input" placeholder="Value" required>
-            </div>
-            <div class="checkout-form-group">
-              <label for="acc-email">Email</label>
-              <input type="email" id="acc-email" name="email" class="Input" placeholder="example@mail.com" required>
-            </div>
-            <div class="checkout-form-group">
-              <label for="acc-city">City</label>
-              <input type="text" id="acc-city" name="city" class="Input" placeholder="Value" required>
-            </div>
-            <div class="checkout-form-group">
-              <label for="acc-address">Shipping address</label>
-              <textarea id="acc-address" name="address" class="Textarea" placeholder="Value" rows="3" required></textarea>
-            </div>
-            <button type="submit" class="button button--primary button--full-width">Save</button>
-            <a href="{% url 'logout' %}" class="button button--secondary button--full-width">Logout</a>
-          </form>
-        </div>
-      </div>
-
     </div>
   </div>
 </main>
