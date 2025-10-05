@@ -45,7 +45,7 @@
             <td>{{ c.parent.name }}</td>
             <td>{{ c.created_at }}</td>
             <td>{{ c.updated_at }}</td>
-            <td><a href="{% url 'management-category' c.pk %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management-category' c.slug %}" class="button button--edit">Edit</a></td>
           </tr>
           {% endfor %}
           </tbody>

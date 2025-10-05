@@ -35,22 +35,24 @@ class ManagementCategoriesView(SuperuserRequiredMixin, View):
         paginator = Paginator(categories_list, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        print(page_obj.has_previous())
-        print(page_obj.has_next())
         return render(request, 'management/categories.html', {'page_obj': page_obj})
 
 
 class ManagementCategoryView(SuperuserRequiredMixin, View):
     template_name = 'management/category.html'
 
-    def get(self, request: HttpRequest, pk) -> HttpResponse:
-        category = Category.objects.filter(id=pk).first()
+    def get(self, request: HttpRequest, slug) -> HttpResponse:
+        category = Category.objects.filter(slug=slug).first()
+        if not category:
+            messages.error(request, 'Category does not found')
+            return redirect('management-categories')
+
         initial = {'name': category.name, 'parent': category.parent}
         form = CategoryForm(initial=initial)
-        return render(request, self.template_name, {'form': form, 'pk': pk})
+        return render(request, self.template_name, {'form': form, 'pk': category.pk})
 
-    def post(self, request: HttpRequest, pk) -> HttpResponse:
-        category = Category.objects.filter(id=pk).first()
+    def post(self, request: HttpRequest, slug) -> HttpResponse:
+        category = Category.objects.filter(slug=slug).first()
         if not category:
             messages.error(request, 'Category does not found')
             return render(request, self.template_name, {'form': CategoryForm(request.POST)})
