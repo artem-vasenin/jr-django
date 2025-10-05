@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import (
     ManagementView, ManagementProductView, ManagementProductsView, ManagementAddProductView,
-    ManagementCategoriesView, ManagementCategoryView, ManagementAddCategoryView,
+    ManagementCategoriesView, ManagementCategoryView, ManagementAddCategoryView, ManagementDeleteCategoryView,
 )
 
 
@@ -14,4 +14,5 @@ urlpatterns = [
     path('categories/', ManagementCategoriesView.as_view(), name='management-categories'),
     path('category/<int:pk>/', ManagementCategoryView.as_view(), name='management-category'),
     path('category/add/', ManagementAddCategoryView.as_view(), name='management-add-category'),
+    path('category/delete/<int:pk>/', ManagementDeleteCategoryView.as_view(), name='management-delete-category'),
 ]

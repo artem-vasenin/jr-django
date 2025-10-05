@@ -17,49 +17,32 @@
             <h1 class="admin-content__title">Admin - Add category</h1>
 
             <div class="admin-form-layout">
-                <div class="admin-form-col-left">
-                    <h2 class="admin-form-section-title">Control</h2>
-                    <div class="image-upload-card">
-                        <div class="image-upload-placeholder">
-                            <i class="fa-regular fa-image"></i>
-                        </div>
-                        <input type="file" id="image-upload-input" class="is-hidden" accept="image/*">
-                        <button type="button" class="button button--primary upload-btn" id="upload-image-btn">Upload Image</button>
-                    </div>
-                </div>
-
                 <div class="admin-form-col-right">
                     <h2 class="admin-form-section-title">Information</h2>
-                    <form id="product-form" class="product-info-form">
+                    <form id="category-form" class="product-info-form" method="post">
+                        {% csrf_token %}
+
                         <div class="checkout-form-group">
-                            <label for="prod-title">Title</label>
-                            <input type="text" id="prod-title" class="Input" placeholder="Value">
+                            <label for="{{ form.name.id_for_label }}">Name</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="error">{{ form.name.errors }}</div>
+                            {% endif %}
                         </div>
+
                         <div class="checkout-form-group">
-                            <label for="prod-description">description</label>
-                            <textarea id="prod-description" class="Textarea" placeholder="Value" rows="4"></textarea>
-                        </div>
-                        <div class="checkout-form-group">
-                            <label for="prod-price">price</label>
-                            <input type="text" id="prod-price" class="Input" placeholder="Value">
-                        </div>
-                        <div class="checkout-form-group">
-                            <label>category</label>
-                            <div class="category-tags">
-                                <button type="button" class="category-tag active">Label</button>
-                                <button type="button" class="category-tag">Label</button>
-                                <button type="button" class="category-tag">Label</button>
-                                <button type="button" class="category-tag">Label</button>
-                            </div>
+                            <label for="{{ form.parent.id_for_label }}">Parent</label>
+                            {{ form.parent }}
+                            {% if form.parent.errors %}
+                                <div class="error">{{ form.parent.errors }}</div>
+                            {% endif %}
                         </div>
                     </form>
                 </div>
 
                 <!-- Control buttons -->
                 <div class="admin-form-actions">
-                    <button type="submit" form="product-form" class="button button--primary">Save</button>
-                    <button type="button" class="button button--secondary">Hide</button>
-                    <button type="button" class="button button--danger">Delete</button>
+                    <button type="submit" form="category-form" class="button button--primary">Save</button>
                 </div>
             </div>
         </div>

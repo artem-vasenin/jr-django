@@ -128,6 +128,6 @@ class AccountView(View):
             user.profile.city = city
             user.profile.address = address
             user.save()
-            messages.success(request, 'Профиль успешно изменен.')
+            messages.success(request, 'Category changed successfully')
 
         return render(request, self.template_name, {'form': form})
