@@ -1,11 +1,12 @@
 from django.views import View
+from django.db.models import Q
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 
-from .forms import UserLoginForm, RegisterForm, AccountForm
 from .mixins import AnonymousRequiredMixin
+from .forms import UserLoginForm, RegisterForm, AccountForm
 
 
 class UserLoginView(AnonymousRequiredMixin, View):
@@ -110,23 +111,21 @@ class AccountView(View):
             city = form.cleaned_data.get('city')
             address = form.cleaned_data.get('address')
 
-            user_with_email = User.objects.get(email=email)
-            user_with_phone = User.objects.get(profile__phone=phone)
-
-            if user_with_email and not user_with_email.pk == request.user.pk:
+            if User.objects.filter(Q(email=email) & ~Q(pk=request.user.pk)).exists():
                 form.add_error(None, 'Такой email уже занят')
                 return render(request, self.template_name, {'form': form})
 
-            if user_with_phone and not user_with_phone.pk == request.user.pk:
+            if User.objects.filter(Q(profile__phone=phone) & ~Q(pk=request.user.pk)).exists():
                 form.add_error(None, 'Такой телефон уже занят')
                 return render(request, self.template_name, {'form': form})
 
-            request.user.first_name = first_name
-            request.user.last_name = last_name
-            request.user.email = email
-            request.user.profile.phone = phone
-            request.user.profile.city = city
-            request.user.profile.address = address
-            request.user.save()
+            user = request.user
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+            user.profile.phone = phone
+            user.profile.city = city
+            user.profile.address = address
+            user.save()
 
         return render(request, self.template_name, {'form': form})
