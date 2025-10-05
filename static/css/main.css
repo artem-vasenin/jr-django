@@ -1983,3 +1983,26 @@ footer {
 .errorlist {
     list-style: none;
 }
+
+.alert {
+    padding: 4px 8px;
+    margin: 12px auto;
+    max-width: 1024px;
+    min-width: 320px;
+    border: 1px solid red;
+    border-radius: 4px;
+    background: rgba(255, 0, 0, 0.2);
+    color: red;
+
+    &.alert-success {
+        border: 1px solid darkgreen;
+        background: rgba(0, 100, 0, 0.2);
+        color: darkgreen;
+    }
+
+    &.alert-warning {
+        border: 1px solid orange;
+        background: rgba(255, 165, 0, 0.2);
+        color: orange;
+    }
+}

@@ -25,10 +25,6 @@
               <div class="error">{{ error }}</div>
             {% endfor %}
 
-            {% if form.errors %}
-            <div class="error">{{ form.errors }}</div>
-            {% endif %}
-
             <div class="checkout-form-group">
               <label for="first_name">First Name</label>
               {{ form.first_name }}
@@ -40,6 +36,9 @@
             <div class="checkout-form-group">
               <label for="phone">Phone</label>
               {{ form.phone }}
+                {% for error in form.phone.errors %}
+                <div class="error">{{ error }}</div>
+                {% endfor %}
             </div>
             <div class="checkout-form-group">
               <label for="email">Email</label>

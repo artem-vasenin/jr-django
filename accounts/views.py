@@ -1,5 +1,6 @@
 from django.views import View
 from django.db.models import Q
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest
@@ -127,5 +128,6 @@ class AccountView(View):
             user.profile.city = city
             user.profile.address = address
             user.save()
+            messages.success(request, 'Профиль успешно изменен.')
 
         return render(request, self.template_name, {'form': form})
