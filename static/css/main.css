@@ -1468,6 +1468,24 @@ footer {
 .account-tabs {
     display: flex;
     border-bottom: 1px solid var(--border-default);
+    position: relative;
+}
+.admin-btn {
+    position: absolute;
+    right: 0;
+    padding: 4px 12px;
+    font-size: 16px;
+    line-height: 1.4;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: var(--grey-text);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+
+    &:hover {
+        color: darkred;
+    }
 }
 
 .account-tab {

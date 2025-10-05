@@ -18,3 +18,12 @@ class AuthenticatedRequiredMixin(View):
         if not request.user.is_authenticated:
             return redirect(self.redirect_url)
         return super().dispatch(request, *args, **kwargs)
+
+
+class SuperuserRequiredMixin(View):
+    redirect_url = 'home'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return redirect(self.redirect_url)
+        return super().dispatch(request, *args, **kwargs)

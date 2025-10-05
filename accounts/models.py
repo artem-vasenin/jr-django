@@ -7,7 +7,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     city = models.CharField(max_length=100, null=True, blank=True, verbose_name='City')
     address = models.CharField(max_length=300, null=True, blank=True, verbose_name='Shipping address')
-    phone = models.CharField(max_length=12, null=True, blank=True, verbose_name='Phone number',
+    phone = models.CharField(max_length=11, null=True, blank=True, verbose_name='Phone number',
         validators=[
             RegexValidator(
                 regex=r'^79\d{9}$',

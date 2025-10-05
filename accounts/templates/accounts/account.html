@@ -5,11 +5,15 @@
 
 {% block body %}
 <main class="account-page-wrapper">
+
   <div class="account-container">
     <!-- Tabs Navigation -->
     <div class="account-tabs">
         <button class="account-tab active" data-tab-target="#account-info">Account Information</button>
         <button class="account-tab" data-tab-target="#order-history">Order History</button>
+        {% if user.is_superuser %}
+            <a href="{% url 'management' %}" class="admin-btn">Admin panel</a>
+        {% endif %}
     </div>
 
     <!-- Tabs Content -->

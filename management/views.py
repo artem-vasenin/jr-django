@@ -1,20 +1,22 @@
+from django.views import View
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest
-from django.views import View
+
+from accounts.mixins import SuperuserRequiredMixin
 
 
-class ManagementView(View):
+class ManagementView(SuperuserRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
         return render(request, 'management/index.html')
 
-class ManagementProductsView(View):
+class ManagementProductsView(SuperuserRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
         return render(request, 'management/products.html')
 
-class ManagementProductView(View):
+class ManagementProductView(SuperuserRequiredMixin, View):
     def get(self, request: HttpRequest, pk) -> HttpResponse:
         return render(request, 'management/product.html', {pk: pk})
 
-class ManagementAddProductView(View):
+class ManagementAddProductView(SuperuserRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
         return render(request, 'management/add-product.html')
