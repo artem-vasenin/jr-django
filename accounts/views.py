@@ -79,11 +79,6 @@ class UserLogoutView(View):
         return redirect('login')
 
 
-class ForgotView(View):
-    def get(self, request: HttpRequest) -> HttpResponse:
-        return render(request, 'accounts/forgot-password-form.html')
-
-
 class AccountView(View):
     template_name = 'accounts/account.html'
 
