@@ -28,7 +28,7 @@ class ProductForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'Input', 'placeholder': 'Name', 'id': 'name'})
     )
     description = forms.CharField(
-        max_length=100,
+        max_length=9999,
         required=False,
         widget=forms.Textarea(attrs={'class': 'Textarea', 'placeholder': 'Description', 'id': 'description'})
     )
@@ -55,17 +55,16 @@ class ProductForm(forms.ModelForm):
         min_value=0,
         widget=forms.NumberInput(attrs={'class': 'Input', 'placeholder': 'Stock', 'id': 'stock', 'min': '0'})
     )
-    image = forms.ImageField(
-        required=True,
-        widget=forms.ClearableFileInput(
-            attrs={
-                'id': 'image-upload-input',
-                'class': 'is-hidden',
-                'accept': 'image/*',
-            }
-        )
-    )
 
     class Meta:
         model = Product
         fields = ['name', 'description', 'price', 'category', 'is_active', 'stock', 'image']
+        widgets = {
+            'image': forms.FileInput(
+                attrs={
+                    'id': 'image-upload-input',
+                    'class': 'is-hidden',
+                    'accept': 'image/*',
+                }
+            ),
+        }

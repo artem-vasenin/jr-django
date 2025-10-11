@@ -5,8 +5,6 @@ from django.db.models.signals import pre_save
 
 
 def product_image_path(instance, filename):
-    ext = filename.split('.')[-1]
-    filename = f"{instance.slug}.{ext}" if instance.slug else filename
     return os.path.join('products', instance.slug or 'temp', filename)
 
 class Category(models.Model):

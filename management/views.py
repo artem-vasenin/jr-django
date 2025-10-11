@@ -1,3 +1,5 @@
+import os
+
 from django.views import View
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -16,7 +18,7 @@ class ManagementView(SuperuserRequiredMixin, View):
 
 class ManagementProductsView(SuperuserRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
-        lst = Product.objects.all().order_by('id')
+        lst = Product.objects.all().order_by('-id')
         paginator = Paginator(lst, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -26,7 +28,7 @@ class ManagementProductsView(SuperuserRequiredMixin, View):
 class ManagementProductView(SuperuserRequiredMixin, View):
     template_name = 'management/product.html'
 
-    def get(self, request: HttpRequest, slug) -> HttpResponse:
+    def get(self, request: HttpRequest, slug: str) -> HttpResponse:
         obj = Product.objects.filter(slug=slug).first()
         if not obj:
             messages.error(request, 'Product does not found')
@@ -42,7 +44,28 @@ class ManagementProductView(SuperuserRequiredMixin, View):
             'image': obj.image,
         }
         form = ProductForm(initial=initial)
-        return render(request, self.template_name, {'form': form, 'pk': obj.pk})
+        return render(request, self.template_name, {'form': form, 'object': obj})
+
+    def post(self, request: HttpRequest, slug: str):
+        obj = Product.objects.filter(slug=slug).first()
+
+        if obj:
+            if request.POST.get('action') == 'save':
+                form = ProductForm(request.POST, request.FILES, instance=obj)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, 'Product was changed')
+                    return redirect('management:management-products')
+            elif request.POST.get('action') == 'hide':
+                obj.is_active = False
+                obj.save()
+                messages.success(request, 'Product was hidden')
+                return redirect('management:management-products')
+            elif request.POST.get('action') == 'delete':
+                obj.delete()
+                messages.success(request, 'Product deleted successfully')
+                return redirect('management:management-products')
+        return redirect('management:management-products')
 
 
 class ManagementAddProductView(SuperuserRequiredMixin, View):

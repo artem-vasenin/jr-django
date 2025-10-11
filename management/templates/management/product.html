@@ -1,4 +1,5 @@
 {% extends 'base/index.html' %}
+{% load static %}
 
 {% block title %}Reviews{% endblock %}
 
@@ -21,9 +22,15 @@
                 <div class="admin-form-col-left">
                     <h2 class="admin-form-section-title">Control</h2>
                     <div class="image-upload-card {% if form.name.errors %}error{% endif %}">
+                        {% if object.image %}
+                            <div class="image-upload-placeholder">
+                                <img src="{{ object.image.url }}" alt="img"/>
+                            </div>
+                        {% else %}
                         <div class="image-upload-placeholder">
                             <i class="fa-regular fa-image"></i>
                         </div>
+                        {% endif %}
                         {{ form.image }}
                         <button type="button" class="button button--primary upload-btn" id="upload-image-btn">
                             Upload Image
@@ -67,9 +74,9 @@
                 </div>
                 <!-- Control buttons -->
                 <div class="admin-form-actions">
-                    <button type="submit" class="button button--primary">Save</button>
-                    <button type="button" class="button button--secondary">Hide</button>
-                    <button type="button" class="button button--danger">Delete</button>
+                    <button type="submit" name="action" value="save" class="button button--primary">Save</button>
+                    <button type="submit" name="action" value="hide" class="button button--secondary">Hide</button>
+                    <button type="submit" name="action" value="delete" class="button button--danger">Delete</button>
                 </div>
             </div>
         </div>

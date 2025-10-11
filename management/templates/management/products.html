@@ -28,13 +28,13 @@
           <thead>
           <tr>
             <th>id</th>
+            <th>image</th>
             <th>name</th>
-            <th>slug</th>
             <th>description</th>
             <th>price</th>
             <th>category</th>
+            <th>stock</th>
             <th>created_at</th>
-            <th>updated_at</th>
             <th></th>
           </tr>
           </thead>
@@ -42,13 +42,13 @@
           {% for c in page_obj %}
           <tr>
             <td>{{ c.pk }}</td>
+            <td><img src="{{ c.image.url }}" alt="img" width="50" /></td>
             <td>{{ c.name }}</td>
-            <td>{{ c.slug }}</td>
-            <td>{{ c.description }}</td>
+            <td>{{ c.description|truncatewords:5 }}</td>
             <td>${{ c.price }}</td>
             <td>{{ c.category.name }}</td>
-            <td>{{ c.created_at }}</td>
-            <td>{{ c.updated_at }}</td>
+            <td>{{ c.stock }}</td>
+            <td>{{ c.created_at|date:"d.m.Y H:i" }}</td>
             <td><a href="{% url 'management:management-product' c.slug %}" class="button button--edit">Edit</a></td>
           </tr>
           {% endfor %}
