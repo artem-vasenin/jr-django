@@ -23,11 +23,13 @@
       </div>
 
       <div class="admin-table-wrapper">
+      {% if page_obj %}
         <table class="admin-table">
           <thead>
           <tr>
             <th>id</th>
             <th>name</th>
+            <th>slug</th>
             <th>description</th>
             <th>price</th>
             <th>category</th>
@@ -37,115 +39,41 @@
           </tr>
           </thead>
           <tbody>
+          {% for c in page_obj %}
           <tr>
-            <td>122033</td>
-            <td>name</td>
-            <td>description</td>
-            <td>$100.00</td>
-            <td>category</td>
-            <td>YYYY-MM-DD</td>
-            <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
+            <td>{{ c.pk }}</td>
+            <td>{{ c.name }}</td>
+            <td>{{ c.slug }}</td>
+            <td>{{ c.description }}</td>
+            <td>${{ c.price }}</td>
+            <td>{{ c.category.name }}</td>
+            <td>{{ c.created_at }}</td>
+            <td>{{ c.updated_at }}</td>
+            <td><a href="{% url 'management:management-product' c.slug %}" class="button button--edit">Edit</a></td>
           </tr>
-          <tr>
-            <td>122033</td>
-            <td>name</td>
-            <td>description</td>
-            <td>$90.00</td>
-            <td>category</td>
-            <td>YYYY-MM-DD</td>
-            <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
-          </tr>
-          <tr>
-            <td>122033</td>
-            <td>name</td>
-            <td>description</td>
-            <td>$140.00</td>
-            <td>category</td>
-            <td>YYYY-MM-DD</td>
-            <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
-          </tr>
-          <tr>
-            <td>122033</td>
-            <td>name</td>
-            <td>description</td>
-            <td>$120.00</td>
-            <td>category</td>
-            <td>YYYY-MM-DD</td>
-            <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
-          </tr>
-          <tr>
-            <td>122033</td>
-            <td>name</td>
-            <td>description</td>
-            <td>$20.00</td>
-            <td>category</td>
-            <td>YYYY-MM-DD</td>
-            <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
-          </tr>
-          <tr>
-            <td>122033</td>
-            <td>name</td>
-            <td>description</td>
-            <td>$20.00</td>
-            <td>category</td>
-            <td>YYYY-MM-DD</td>
-            <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
-          </tr>
-          <tr>
-            <td>122033</td>
-            <td>name</td>
-            <td>description</td>
-            <td>$20.00</td>
-            <td>category</td>
-            <td>YYYY-MM-DD</td>
-            <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
-          </tr>
-          <tr>
-            <td>122033</td>
-            <td>name</td>
-            <td>description</td>
-            <td>$20.00</td>
-            <td>category</td>
-            <td>YYYY-MM-DD</td>
-            <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
-          </tr>
-          <tr>
-            <td>122033</td>
-            <td>name</td>
-            <td>description</td>
-            <td>$20.00</td>
-            <td>category</td>
-            <td>YYYY-MM-DD</td>
-            <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
-          </tr>
-          <tr>
-            <td>122033</td>
-            <td>name</td>
-            <td>description</td>
-            <td>$20.00</td>
-            <td>category</td>
-            <td>YYYY-MM-DD</td>
-            <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
-          </tr>
+          {% endfor %}
           </tbody>
         </table>
+      {% else %}
+        <div class="empty_list">List of products is empty</div>
+      {% endif %}
       </div>
 
       <!-- Pagination -->
+      {% if page_obj.has_previous or page_obj.has_next %}
       <div class="account-pagination">
-        <a href="#" class="pagination-link-account disabled">← Previous</a>
-        <a href="#" class="pagination-link-account">Next →</a>
+        <a
+            href="?page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% endif %}"
+            class="pagination-link-account {% if not page_obj.has_previous %}disabled{% endif %}"
+            {% if not page_obj.has_previous %}disabled{% endif %}
+        >← Previous</a>
+        <a
+            href="?page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}"
+            class="pagination-link-account {% if not page_obj.has_next %}disabled{% endif %}"
+            {% if not page_obj.has_next %}disabled{% endif %}
+        >Next →</a>
       </div>
+    {% endif %}
     </div>
   </div>
 </main>

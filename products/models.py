@@ -48,12 +48,6 @@ class Product(models.Model):
 
 def pre_save_product_slug(sender, instance, **kwargs):
     if not instance.slug:
-        base_slug = slugify(instance.name)
-        slug = base_slug
-        counter = 1
-        while Product.objects.filter(slug=slug).exclude(pk=instance.pk).exists():
-            slug = f'{base_slug}-{counter}'
-            counter += 1
-        instance.slug = slug
+        instance.slug = slugify(instance.name)
 
 pre_save.connect(pre_save_product_slug, sender=Product)

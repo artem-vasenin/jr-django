@@ -13,56 +13,67 @@
         </div>
 
         <!-- Content Area -->
+        <form method="post" enctype="multipart/form-data">
         <div class="admin-content">
             <h1 class="admin-content__title">Admin - Product Stock</h1>
 
             <div class="admin-form-layout">
                 <div class="admin-form-col-left">
                     <h2 class="admin-form-section-title">Control</h2>
-                    <div class="image-upload-card">
+                    <div class="image-upload-card {% if form.name.errors %}error{% endif %}">
                         <div class="image-upload-placeholder">
                             <i class="fa-regular fa-image"></i>
                         </div>
-                        <input type="file" id="image-upload-input" class="is-hidden" accept="image/*">
-                        <button type="button" class="button button--primary upload-btn" id="upload-image-btn">Upload Image</button>
+                        {{ form.image }}
+                        <button type="button" class="button button--primary upload-btn" id="upload-image-btn">
+                            Upload Image
+                        </button>
                     </div>
                 </div>
 
                 <div class="admin-form-col-right">
                     <h2 class="admin-form-section-title">Information</h2>
-                    <form id="product-form" class="product-info-form">
+                        {% csrf_token %}
                         <div class="checkout-form-group">
-                            <label for="prod-title">Title</label>
-                            <input type="text" id="prod-title" class="Input" placeholder="Value">
+                            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}<div class="error">{{ form.name.errors }}</div>{% endif %}
                         </div>
                         <div class="checkout-form-group">
-                            <label for="prod-description">description</label>
-                            <textarea id="prod-description" class="Textarea" placeholder="Value" rows="4"></textarea>
+                            <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}<div class="error">{{ form.description.errors }}</div>{% endif %}
                         </div>
                         <div class="checkout-form-group">
-                            <label for="prod-price">price</label>
-                            <input type="text" id="prod-price" class="Input" placeholder="Value">
+                            <label for="{{ form.price.id_for_label }}">{{ form.price.label }}</label>
+                            {{ form.price }}
+                            {% if form.price.errors %}<div class="error">{{ form.price.errors }}</div>{% endif %}
                         </div>
                         <div class="checkout-form-group">
-                            <label>category</label>
-                            <div class="category-tags">
-                                <button type="button" class="category-tag active">Label</button>
-                                <button type="button" class="category-tag">Label</button>
-                                <button type="button" class="category-tag">Label</button>
-                                <button type="button" class="category-tag">Label</button>
-                            </div>
+                            <label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>
+                            {{ form.category }}
+                            {% if form.category.errors %}<div class="error">{{ form.category.errors }}</div>{% endif %}
                         </div>
-                    </form>
+                        <div class="checkout-form-group">
+                            <label for="{{ form.stock.id_for_label }}">{{ form.stock.label }}</label>
+                            {{ form.stock }}
+                            {% if form.stock.errors %}<div class="error">{{ form.stock.errors }}</div>{% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.is_active.id_for_label }}">{{ form.is_active.label }}</label>
+                            {{ form.is_active }}
+                            {% if form.is_active.errors %}<div class="error">{{ form.is_active.errors }}</div>{% endif %}
+                        </div>
                 </div>
-
                 <!-- Control buttons -->
                 <div class="admin-form-actions">
-                    <button type="submit" form="product-form" class="button button--primary">Save</button>
+                    <button type="submit" class="button button--primary">Save</button>
                     <button type="button" class="button button--secondary">Hide</button>
                     <button type="button" class="button button--danger">Delete</button>
                 </div>
             </div>
         </div>
+        </form>
     </div>
 </main>
 {% endblock %}

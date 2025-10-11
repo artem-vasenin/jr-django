@@ -1836,6 +1836,10 @@ footer {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+
+    &.error {
+        background-color: rgba(255, 0, 0, 0.2);
+    }
 }
 
 .image-upload-placeholder {
