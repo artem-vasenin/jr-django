@@ -12,7 +12,7 @@
         <button class="account-tab active" data-tab-target="#account-info">Account Information</button>
         <button class="account-tab" data-tab-target="#order-history">Order History</button>
         {% if user.is_superuser %}
-            <a href="{% url 'management' %}" class="admin-btn">Admin panel</a>
+            <a href="{% url 'management:management' %}" class="admin-btn">Admin panel</a>
         {% endif %}
     </div>
 
@@ -58,7 +58,7 @@
             </div>
 
             <button type="submit" class="button button--primary button--full-width">Save</button>
-            <a href="{% url 'logout' %}" class="button button--secondary button--full-width">Logout</a>
+            <a href="{% url 'accounts:logout' %}" class="button button--secondary button--full-width">Logout</a>
           </form>
         </div>
       </div>

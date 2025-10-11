@@ -6,6 +6,8 @@ from .views import (
 )
 
 
+app_name='management'
+
 urlpatterns = [
     path('', ManagementView.as_view(), name='management'),
     path('products/', ManagementProductsView.as_view(), name='management-products'),

@@ -7,16 +7,16 @@
   <div class="admin-container">
     <!-- Tabs Navigation -->
     <div class="admin-tabs">
-      <a href="{% url 'management-products' %}" class="admin-tab">Product Management</a>
-      <a href="{% url 'management-categories' %}" class="admin-tab active">Category Management</a>
-      <a href="{% url 'management' %}" class="admin-tab">Dashboard</a>
+      <a href="{% url 'management:management-products' %}" class="admin-tab">Product Management</a>
+      <a href="{% url 'management:management-categories' %}" class="admin-tab active">Category Management</a>
+      <a href="{% url 'management:management' %}" class="admin-tab">Dashboard</a>
     </div>
 
     <!-- Content Area -->
     <div class="admin-content">
       <h1 class="admin-content__title">Admin - Categories</h1>
       <div class="admin-actions">
-        <a href="{% url 'management-add-category' %}" class="button button--primary">
+        <a href="{% url 'management:management-add-category' %}" class="button button--primary">
           <i class="fa-solid fa-plus"></i>
           <span>Add Category</span>
         </a>
@@ -45,7 +45,7 @@
             <td>{{ c.parent.name }}</td>
             <td>{{ c.created_at }}</td>
             <td>{{ c.updated_at }}</td>
-            <td><a href="{% url 'management-category' c.slug %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management:management-category' c.slug %}" class="button button--edit">Edit</a></td>
           </tr>
           {% endfor %}
           </tbody>

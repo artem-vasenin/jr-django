@@ -8,7 +8,7 @@
     <nav class="header__nav">
       <ul>
         <li><a href="{% url 'home' %}">Products</a></li>
-        <li><a href="{% url 'guides' %}">Guides & Recipes</a></li>
+        <li><a href="{% url 'products:guides' %}">Guides & Recipes</a></li>
         <li><a href="#">Community</a></li>
         <li><a href="#">Resources</a></li>
         <li><a href="#">Contact</a></li>
@@ -16,17 +16,17 @@
     </nav>
     {% if user.is_authenticated %}
     <div class="header__user-actions">
-      <a href="{% url 'account' %}" class="user-icon" aria-label="My Account">
+      <a href="{% url 'accounts:account' %}" class="user-icon" aria-label="My Account">
         <img src="{% static '/img/icons/User_alt.svg' %}" alt="User Account">
       </a>
-      <a href="{% url 'cart' %}" class="cart-icon" aria-label="Shopping Cart">
+      <a href="{% url 'orders:cart' %}" class="cart-icon" aria-label="Shopping Cart">
         <img src="{% static '/img/icons/Shopping_bag.svg' %}" alt="Shopping Cart">
       </a>
     </div>
     {% else %}
     <div class="header__auth-buttons">
-      <a href="{% url 'login' %}" class="button button--secondary">Sign in</a>
-      <a href="{% url 'register' %}" class="button button--primary">Register</a>
+      <a href="{% url 'accounts:login' %}" class="button button--secondary">Sign in</a>
+      <a href="{% url 'accounts:register' %}" class="button button--primary">Register</a>
     </div>
     {% endif %}
   </div>

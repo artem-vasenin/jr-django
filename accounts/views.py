@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth import authenticate, login, logout
 
-from .mixins import AnonymousRequiredMixin
+from .mixins import AnonymousRequiredMixin, AuthenticatedRequiredMixin
 from .forms import UserLoginForm, RegisterForm, AccountForm
 
 
@@ -76,23 +76,26 @@ class RegisterView(AnonymousRequiredMixin, View):
 class UserLogoutView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         logout(request)
-        return redirect('login')
+        return redirect('accounts:login')
 
 
-class AccountView(View):
+class AccountView(AuthenticatedRequiredMixin, View):
     template_name = 'accounts/account.html'
 
     def get(self, request: HttpRequest) -> HttpResponse:
         user = request.user
-        profile = user.profile if user else None
+
+        profile = getattr(user, 'profile', None)
         initial = {
             'first_name': getattr(user, 'first_name', ''),
             'last_name': getattr(user, 'last_name', ''),
             'email': user.email,
-            'phone': getattr(profile, 'phone', ''),
-            'city': getattr(profile, 'city', ''),
-            'address': getattr(profile, 'address', ''),
         }
+        if profile:
+            initial['phone'] = getattr(profile, 'phone', '')
+            initial['city'] = getattr(profile, 'city', '')
+            initial['address'] = getattr(profile, 'address', '')
+
         form = AccountForm(initial=initial)
 
         return render(request, self.template_name, {'form': form})

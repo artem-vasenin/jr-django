@@ -7,16 +7,16 @@
   <div class="admin-container">
     <!-- Tabs Navigation -->
     <div class="admin-tabs">
-      <a href="{% url 'management-products' %}" class="admin-tab active">Product Management</a>
-      <a href="{% url 'management-categories' %}" class="admin-tab">Category Management</a>
-      <a href="{% url 'management' %}" class="admin-tab">Dashboard</a>
+      <a href="{% url 'management:management-products' %}" class="admin-tab active">Product Management</a>
+      <a href="{% url 'management:management-categories' %}" class="admin-tab">Category Management</a>
+      <a href="{% url 'management:management' %}" class="admin-tab">Dashboard</a>
     </div>
 
     <!-- Content Area -->
     <div class="admin-content">
       <h1 class="admin-content__title">Admin - Product Stock</h1>
       <div class="admin-actions">
-        <a href="{% url 'management-add-product' %}" class="button button--primary">
+        <a href="{% url 'management:management-add-product' %}" class="button button--primary">
           <i class="fa-solid fa-plus"></i>
           <span>Add Product</span>
         </a>
@@ -45,7 +45,7 @@
             <td>category</td>
             <td>YYYY-MM-DD</td>
             <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management-product' 1 %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
           </tr>
           <tr>
             <td>122033</td>
@@ -55,7 +55,7 @@
             <td>category</td>
             <td>YYYY-MM-DD</td>
             <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management-product' 1 %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
           </tr>
           <tr>
             <td>122033</td>
@@ -65,7 +65,7 @@
             <td>category</td>
             <td>YYYY-MM-DD</td>
             <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management-product' 1 %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
           </tr>
           <tr>
             <td>122033</td>
@@ -75,7 +75,7 @@
             <td>category</td>
             <td>YYYY-MM-DD</td>
             <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management-product' 1 %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
           </tr>
           <tr>
             <td>122033</td>
@@ -85,7 +85,7 @@
             <td>category</td>
             <td>YYYY-MM-DD</td>
             <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management-product' 1 %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
           </tr>
           <tr>
             <td>122033</td>
@@ -95,7 +95,7 @@
             <td>category</td>
             <td>YYYY-MM-DD</td>
             <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management-product' 1 %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
           </tr>
           <tr>
             <td>122033</td>
@@ -105,7 +105,7 @@
             <td>category</td>
             <td>YYYY-MM-DD</td>
             <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management-product' 1 %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
           </tr>
           <tr>
             <td>122033</td>
@@ -115,7 +115,7 @@
             <td>category</td>
             <td>YYYY-MM-DD</td>
             <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management-product' 1 %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
           </tr>
           <tr>
             <td>122033</td>
@@ -125,7 +125,7 @@
             <td>category</td>
             <td>YYYY-MM-DD</td>
             <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management-product' 1 %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
           </tr>
           <tr>
             <td>122033</td>
@@ -135,7 +135,7 @@
             <td>category</td>
             <td>YYYY-MM-DD</td>
             <td>YYYY-MM-DD</td>
-            <td><a href="{% url 'management-product' 1 %}" class="button button--edit">Edit</a></td>
+            <td><a href="{% url 'management:management-product' 1 %}" class="button button--edit">Edit</a></td>
           </tr>
           </tbody>
         </table>
