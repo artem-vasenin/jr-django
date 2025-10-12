@@ -19,44 +19,64 @@
             </div>
 
             <div class="sidebar__section">
+                {% if categories %}
                 <h3 class="section-title">Product Type</h3>
                 <div class="checkbox-group">
-                    <label class="checkbox-container">Hops
-                        <input type="checkbox" data-keyword="Hops">
+                    {% for c in categories %}
+                    <label class="checkbox-container">{{ c.name }}
+                        <input type="checkbox" data-keyword="{{ c.name }}">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="checkbox-container">Malts
-                        <input type="checkbox" data-keyword="Malts">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="checkbox-container">Yeast
-                        <input type="checkbox" data-keyword="Yeast">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="checkbox-container">Adjuncts
-                        <input type="checkbox" data-keyword="Adjuncts">
-                        <span class="checkmark"></span>
-                    </label>
+                    {% endfor %}
                 </div>
+                {% endif %}
             </div>
         </aside>
 
         <section class="products-area product-grid-section">
             <div class="search-sort-bar">
-                <div class="search-input-wrapper">
-                    <input type="text" placeholder="Search" class="search-input">
-                    <button class="search-button" aria-label="Search">
+                <form class="search-input-wrapper">
+                    <input name="q" value="{{ q }}" type="text" placeholder="Search" class="search-input">
+                    <button type="submit" class="search-button" aria-label="Search">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
-                </div>
-                <div class="sort-options">
-                    <button class="sort-button active-sort">
-                        <span>New</span>
-                    </button>
-                    <button class="sort-button">Price ascending</button>
-                    <button class="sort-button">Price descending</button>
-                    <button class="sort-button">Rating</button>
-                </div>
+                </form>
+
+                <form class="sort-options">
+                    {% for key, value in request.GET.items %}
+                        {% if key != 'sort' %}
+                            <input type="hidden" name="{{ key }}" value="{{ value }}">
+                        {% endif %}
+                    {% endfor %}
+                    <button
+                        class="sort-button {% if sort == 'new' %}active-sort{% endif %}"
+                        type="submit"
+                        name="sort"
+                        value="new"
+                        {% if sort == 'new' or not page_obj or page_obj|length == 1 %}disabled{% endif %}
+                    >New</button>
+                    <button
+                        class="sort-button {% if sort == 'a_price' %}active-sort{% endif %}"
+                        type="submit"
+                        name="sort"
+                        value="a_price"
+                        {% if sort == 'a_price' or not page_obj or page_obj|length == 1 %}disabled{% endif %}
+                    >Price ascending</button>
+                    <button
+                        class="sort-button {% if sort == 'd_price' %}active-sort{% endif %}"
+                        type="submit"
+                        name="sort"
+                        value="d_price"
+                        {% if sort == 'd_price' or not page_obj or page_obj|length == 1 %}disabled{% endif %}
+                    >Price descending</button>
+                    <button
+                        class="sort-button {% if sort == 'rating' %}active-sort{% endif %}"
+                        type="submit"
+                        name="sort"
+                        value="rating"
+                        {% if sort == 'rating' or not page_obj or page_obj|length == 1 %}disabled{% endif %}
+                    >Rating</button>
+                </form>
             </div>
 
             <div class="product-grid">
@@ -80,7 +100,7 @@
 
             <div class="pagination">
                 {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}" class="pagination__link pagination__link--prev">
+                    <a href="?{{ querystring }}&page={{ page_obj.previous_page_number }}" class="pagination__link pagination__link--prev">
                         <i class="fa-solid fa-arrow-left"></i>
                         <span>Previous</span>
                     </a>
@@ -89,11 +109,11 @@
                 <div class="pagination-list">
                     {% for num in paginator.page_range %}
                         {% if num == page_obj.number %}
-                            <a href="?page={{ num }}" class="pagination__link active">{{ num }}</a>
+                            <a href="?{{ querystring }}&page={{ num }}" class="pagination__link active">{{ num }}</a>
                         {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
-                            <a href="?page={{ num }}" class="pagination__link">{{ num }}</a>
+                            <a href="?{{ querystring }}&page={{ num }}" class="pagination__link">{{ num }}</a>
                         {% elif num == 1 or num == paginator.num_pages %}
-                            <a href="?page={{ num }}" class="pagination__link">{{ num }}</a>
+                            <a href="?{{ querystring }}&page={{ num }}" class="pagination__link">{{ num }}</a>
                         {% elif forloop.first or forloop.last %}
                             <span class="pagination__dots">...</span>
                         {% endif %}
@@ -101,7 +121,7 @@
                 </div>
 
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}" class="pagination__link pagination__link--next">
+                    <a href="?{{ querystring }}&page={{ page_obj.next_page_number }}" class="pagination__link pagination__link--next">
                         <span>Next</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>

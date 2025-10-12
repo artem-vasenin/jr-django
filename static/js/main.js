@@ -3,13 +3,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const homePageContent = document.querySelector('.main-content-grid');
     if (homePageContent) {
         // 1. Sort Options Logic
-        const sortButtons = document.querySelectorAll('.sort-options .sort-button');
-        sortButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                sortButtons.forEach(btn => btn.classList.remove('active-sort'));
-                this.classList.add('active-sort');
-            });
-        });
+        // const sortButtons = document.querySelectorAll('.sort-options .sort-button');
+        // sortButtons.forEach(button => {
+        //     button.addEventListener('click', function() {
+        //         sortButtons.forEach(btn => btn.classList.remove('active-sort'));
+        //         this.classList.add('active-sort');
+        //     });
+        // });
 
         // 3. Filter Logic (Keywords and Checkboxes)
         const keywordsList = document.querySelector('.keywords-list');

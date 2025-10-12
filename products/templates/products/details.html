@@ -21,6 +21,7 @@
         <div class="product-description">
             {{ object.description|linebreaks }}
         </div>
+        {% if user.is_authenticated %}
         <div class="cart-controls">
           <button class="button button--primary add-to-cart-button" id="add-to-cart-btn">
             <i class="fa-solid fa-cart-shopping"></i>
@@ -32,6 +33,11 @@
             <button class="quantity-btn" data-action="increase" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
           </div>
         </div>
+        <button class="button add-review-button" id="add-review-btn">
+            <i class="fa-solid fa-message"></i>
+            <span>Add Review</span>
+        </button>
+        {% endif %}
       </div>
     </section>
 

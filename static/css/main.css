@@ -405,6 +405,11 @@ header {
     display: flex;
     align-items: center;
     gap: 8px;
+    cursor: pointer;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
 }
 
 .sort-button.active-sort {
@@ -1106,9 +1111,21 @@ footer {
     Cart Controls & Quantity Counter
 ========================================
 */
+
+.add-review-button {
+    width: 304px;
+    padding: 12px 8px!important;
+    background-color: cadetblue;
+    color: white;
+
+    i {
+        margin-right: 6px;
+    }
+}
+
 .cart-controls {
     width: 304px;
-    height: 40px;
+    height: 40px
 }
 
 .is-hidden {
