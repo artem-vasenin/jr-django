@@ -1407,6 +1407,56 @@ footer {
     resize: vertical;
 }
 
+.Rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    gap: 10px;
+
+    label {
+        font-size: 30px;
+        line-height: 1;
+        cursor: pointer;
+        position: relative;
+    }
+    input {
+        position: absolute;
+        margin: 0;
+        opacity: 0;
+        bottom: 0;
+        left: 8px;
+        z-index: 1;
+    }
+
+    input:checked ~ .star,
+    input:checked + .star,
+    label:hover ~ label .star,
+    label:hover .star {
+        color: gold;
+    }
+
+    .star {
+        color: gray;
+        transition: color 0.2s;
+        position: relative;
+        z-index: 2;
+    }
+}
+
+.reviews-form-section {
+    overflow: hidden;
+    opacity: 1;
+    transition: all .3s ease;
+
+    &.hide {
+        opacity: 0;
+        height: 0;
+        transition: all .3s ease;
+        margin-bottom: 0!important;
+    }
+}
+
 /* Payment Method Radio Buttons */
 .payment-options {
     display: flex;

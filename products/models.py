@@ -1,7 +1,9 @@
 import os
 from django.db import models
 from django.utils.text import slugify
+from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 def product_image_path(instance, filename):
@@ -42,6 +44,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    comment = models.TextField(max_length=999)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 def pre_save_product_slug(sender, instance, **kwargs):

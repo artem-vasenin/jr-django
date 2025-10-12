@@ -34,6 +34,7 @@
             <th>price</th>
             <th>category</th>
             <th>stock</th>
+            <th>active</th>
             <th>created_at</th>
             <th></th>
           </tr>
@@ -48,6 +49,7 @@
             <td>${{ c.price }}</td>
             <td>{{ c.category.name }}</td>
             <td>{{ c.stock }}</td>
+            <td>{{ c.is_active }}</td>
             <td>{{ c.created_at|date:"d.m.Y H:i" }}</td>
             <td><a href="{% url 'management:management-product' c.slug %}" class="button button--edit">Edit</a></td>
           </tr>

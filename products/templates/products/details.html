@@ -34,15 +34,41 @@
             <button class="quantity-btn" data-action="increase" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
           </div>
         </div>
-        <button class="button add-review-button" id="add-review-btn">
-            <i class="fa-solid fa-message"></i>
-            <span>Add Review</span>
-        </button>
+        <div class="review">
+            <button class="button add-review-button" id="add-review-btn">
+                <i class="fa-solid fa-message"></i>
+                <span>Add Review</span>
+            </button>
+        </div>
         {% endif %}
       </div>
     </section>
 
     <!-- Latest Reviews Section -->
+    <section class="reviews-form-section hide" id="reviews-form-section">
+        <div class="review-form">
+            <form action="{% url 'products:add-review' %}" class="review-form">
+                {% csrf_token %}
+                <div class="Rating">
+                    {% for value, label in rating_choices %}
+                        <label>
+                            <input type="radio" name="{{ review_form.rating.name }}" value="{{ value }}" required>
+                            <span class="star">★</span>
+                        </label>
+                    {% endfor %}
+                </div>
+                <div class="comment">
+                    {{ review_form.comment }}
+                </div>
+
+                <button type="submit" class="button add-review-button mt-2">
+                    <i class="fa-solid fa-message"></i>
+                    <span>Save Review</span>
+                </button>
+            </form>
+        </div>
+    </section>
+
     <section class="reviews-section">
       <h2 class="reviews-title">Latest reviews</h2>
       <div class="reviews-grid">
@@ -58,34 +84,6 @@
           <div class="review-author">
             <img src="{% static '/img/tmp2.svg' %}" alt="User avatar" class="author-avatar">
             <span class="author-name">AmberAleFanatic</span>
-          </div>
-        </div>
-        <!-- Review Card 2 -->
-        <div class="review-card">
-          <div class="review-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-          </div>
-          <div class="review-body">
-            <h4 class="review-heading">Never Brew Without It</h4>
-            <p class="review-text">I add a bit of C60 to almost every recipe. It improves head retention and gives the beer a finished quality that's hard to achieve otherwise. Works great in IPAs to balance the bitterness.</p>
-          </div>
-          <div class="review-author">
-            <img src="{% static '/img/tmp2.svg' %}" alt="User avatar" class="author-avatar">
-            <span class="author-name">BrewMore</span>
-          </div>
-        </div>
-        <!-- Review Card 3 -->
-        <div class="review-card">
-          <div class="review-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-          </div>
-          <div class="review-body">
-            <h4 class="review-heading">Consistent and Reliable</h4>
-            <p class="review-text">The quality of this malt is always top-notch. Consistent color, wonderful aroma when crushed. If a recipe calls for Crystal 60, this is the one I always reach for. Recommended.</p>
-          </div>
-          <div class="review-author">
-            <img src="{% static '/img/tmp2.svg' %}" alt="User avatar" class="author-avatar">
-            <span class="author-name">ConsistentBrewer</span>
           </div>
         </div>
       </div>

@@ -5,12 +5,13 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpRequest
 
 from .models import Product, Category
+from .forms import ReviewForm
 
 
 class HomeView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         categories = Category.objects.all()
-        products = Product.objects.all().order_by('-created_at')
+        products = Product.objects.filter(is_active=True).order_by('-created_at')
 
         q = request.GET.get('q')
         sort = request.GET.get('sort')
@@ -54,7 +55,21 @@ class GuidesView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         return render(request, 'products/guides.html')
 
+
 class DetailsView(View):
     def get(self, request: HttpRequest, slug: str) -> HttpResponse:
         object = get_object_or_404(Product, slug=slug)
-        return render(request, 'products/details.html', {'object': object})
+        review_form = ReviewForm()
+        rating_choices = review_form.fields['rating'].choices
+        ctx = {
+            'object': object,
+            'review_form': review_form,
+            'rating_choices': rating_choices,
+        }
+        return render(request, 'products/details.html', ctx)
+
+
+class AddReviewView(View):
+    def post(self, request: HttpRequest) -> HttpResponse:
+        print(request.POST)
+        return HttpResponse(request)

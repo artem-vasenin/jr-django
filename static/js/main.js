@@ -48,6 +48,12 @@ document.addEventListener('DOMContentLoaded', function() {
             increaseBtn.addEventListener('click', function() { quantity++; updateView(); });
             updateView();
         }
+
+        addCommentBtn = document.getElementById('add-review-btn'); // add-review-btn
+        addCommentSection = document.getElementById('reviews-form-section'); // add-review-btn
+        addCommentBtn.addEventListener('click', () => {
+            addCommentSection.classList.toggle('hide');
+        });
     }
 
     // --- Logic for Cart Page (cart.html) ---
