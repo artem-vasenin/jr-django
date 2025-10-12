@@ -62,7 +62,7 @@ class DetailsView(View):
         obj = get_object_or_404(Product, slug=slug)
         review_form = ReviewForm()
         rating_choices = review_form.fields['rating'].choices
-        reviews = obj.reviews.all()
+        reviews = obj.reviews.order_by('-id')[:3]
         cant_review = obj.reviews.filter(user=request.user).exists()
         ctx = {
             'object': obj,
