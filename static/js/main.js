@@ -2,52 +2,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Logic for the Main Page (home.html) ---
     const homePageContent = document.querySelector('.main-content-grid');
     if (homePageContent) {
-        // 1. Sort Options Logic
-        // const sortButtons = document.querySelectorAll('.sort-options .sort-button');
-        // sortButtons.forEach(button => {
-        //     button.addEventListener('click', function() {
-        //         sortButtons.forEach(btn => btn.classList.remove('active-sort'));
-        //         this.classList.add('active-sort');
-        //     });
-        // });
-
         // 3. Filter Logic (Keywords and Checkboxes)
         const keywordsList = document.querySelector('.keywords-list');
         const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
 
         if (keywordsList && checkboxes.length > 0) {
-
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const keyword = this.dataset.keyword;
-                    if (this.checked) {
-                        if (!document.querySelector(`.keyword-tag[data-keyword="${keyword}"]`)) {
-                            const newTag = document.createElement('span');
-                            newTag.className = 'keyword-tag';
-                            newTag.setAttribute('data-keyword', keyword);
-                            newTag.innerHTML = `${keyword} <i class="fa-solid fa-xmark remove-keyword-icon"></i>`;
-                            keywordsList.appendChild(newTag);
-                        }
-                    } else {
-                        const tagToRemove = document.querySelector(`.keyword-tag[data-keyword="${keyword}"]`);
-                        if (tagToRemove) {
-                            tagToRemove.remove();
-                        }
-                    }
+            document.querySelectorAll('#filter-form input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', () => {
+                    document.getElementById('filter-form').submit();
                 });
-            });
-
-            keywordsList.addEventListener('click', function(event) {
-                const keywordIcon = event.target.closest('.remove-keyword-icon');
-                if (keywordIcon) {
-                    const keywordTag = keywordIcon.closest('.keyword-tag');
-                    const keywordText = keywordTag.dataset.keyword;
-                    const checkbox = document.querySelector(`.checkbox-container input[data-keyword="${keywordText}"]`);
-                    if (checkbox) {
-                        checkbox.checked = false;
-                    }
-                    keywordTag.remove();
-                }
             });
         }
     }

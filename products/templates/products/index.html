@@ -13,22 +13,21 @@
     <div class="container main-content-grid">
         <aside class="sidebar filter-menu">
             <div class="sidebar__section">
-                <h3 class="section-title">Keywords</h3>
-                <div class="keywords-list">
-                </div>
-            </div>
-
-            <div class="sidebar__section">
                 {% if categories %}
                 <h3 class="section-title">Product Type</h3>
-                <div class="checkbox-group">
-                    {% for c in categories %}
-                    <label class="checkbox-container">{{ c.name }}
-                        <input type="checkbox" data-keyword="{{ c.name }}">
-                        <span class="checkmark"></span>
-                    </label>
-                    {% endfor %}
-                </div>
+                <form method="get" id="filter-form">
+                    <div class="checkbox-group">
+                        {% for c in categories %}
+                        <label class="checkbox-container">{{ c.name }}
+                            <input type="checkbox"
+                               name="category"
+                               value="{{ c.id }}"
+                               {% if c.id in selected_categories %}checked{% endif %}>
+                            <span class="checkmark"></span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </form>
                 {% endif %}
             </div>
         </aside>
@@ -43,11 +42,12 @@
                 </form>
 
                 <form class="sort-options">
-                    {% for key, value in request.GET.items %}
-                        {% if key != 'sort' %}
-                            <input type="hidden" name="{{ key }}" value="{{ value }}">
-                        {% endif %}
+                    {% for cat_id in selected_categories %}
+                        <input type="hidden" name="category" value="{{ cat_id }}">
                     {% endfor %}
+                    {% if request.GET.q %}
+                        <input type="hidden" name="q" value="{{ request.GET.q }}">
+                    {% endif %}
                     <button
                         class="sort-button {% if sort == 'new' %}active-sort{% endif %}"
                         type="submit"

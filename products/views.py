@@ -26,6 +26,10 @@ class HomeView(View):
         else:
             products = products.order_by('-created_at')
 
+        selected_categories = request.GET.getlist('category')
+        if selected_categories:
+            products = products.filter(category__id__in=selected_categories)
+
         querydict = request.GET.copy()
         if 'page' in querydict:
             querydict.pop('page')
@@ -42,6 +46,7 @@ class HomeView(View):
             'querystring': querystring,
             'sort': sort,
             'q': q,
+            'selected_categories': list(map(int, selected_categories)),
         })
 
 
