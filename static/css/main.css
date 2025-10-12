@@ -1448,16 +1448,16 @@ footer {
 }
 
 .reviews-form-section {
-    overflow: hidden;
-    opacity: 1;
-    transition: all .3s ease;
+    /*overflow: hidden;*/
+    /*opacity: 1;*/
+    /*transition: all .3s ease;*/
 
-    &.hide {
-        opacity: 0;
-        height: 0;
-        transition: all .3s ease;
-        margin-bottom: 0!important;
-    }
+    /*&.hide {*/
+    /*    opacity: 0;*/
+    /*    height: 0;*/
+    /*    transition: all .3s ease;*/
+    /*    margin-bottom: 0!important;*/
+    /*}*/
 }
 
 /* Payment Method Radio Buttons */

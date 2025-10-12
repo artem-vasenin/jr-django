@@ -1,5 +1,6 @@
 import os
 from django.db import models
+from django.db.models import Avg
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
@@ -41,6 +42,11 @@ class Product(models.Model):
     image = models.ImageField(upload_to=product_image_path, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def rating(self):
+        result = self.reviews.aggregate(avg_rating=Avg('rating'))
+        return round(result['avg_rating'] or 0)
 
     def __str__(self):
         return self.name

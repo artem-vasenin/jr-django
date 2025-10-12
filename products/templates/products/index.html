@@ -1,5 +1,6 @@
 {% extends 'base/index.html' %}
 {% load static %}
+{% load range_tags %}
 
 {% block title %}Products{% endblock %}
 
@@ -88,6 +89,15 @@
                                 <div class="product-card__info">
                                     <h4 class="product-card__name">{{ p.name }}</h4>
                                     <p class="product-card__cat"><b>{{ p.category.name }}</b></p>
+                                    <div class="review-rating">
+                                        {% for i in 5|times %}
+                                            {% if i < p.rating %}
+                                                <i class="fa-solid fa-star star star--gold"></i>
+                                            {% else %}
+                                                <i class="fa-solid fa-star star star--gray"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                      </div>
                                     <p class="product-card__price">${{ p.price }}</p>
                                     <p class="product-card__description">{{ p.description|truncatechars:30 }}</p>
                                 </div>
