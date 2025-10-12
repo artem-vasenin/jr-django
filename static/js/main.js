@@ -3,10 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const homePageContent = document.querySelector('.main-content-grid');
     if (homePageContent) {
         // 3. Filter Logic (Keywords and Checkboxes)
-        const keywordsList = document.querySelector('.keywords-list');
         const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
 
-        if (keywordsList && checkboxes.length > 0) {
+        if (checkboxes.length > 0) {
             document.querySelectorAll('#filter-form input[type="checkbox"]').forEach(cb => {
                 cb.addEventListener('change', () => {
                     document.getElementById('filter-form').submit();

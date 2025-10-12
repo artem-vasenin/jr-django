@@ -87,6 +87,7 @@
                                 <img src="{{ p.image.url }}" alt="{{ p.name }}" class="product-card__image">
                                 <div class="product-card__info">
                                     <h4 class="product-card__name">{{ p.name }}</h4>
+                                    <p class="product-card__cat"><b>{{ p.category.name }}</b></p>
                                     <p class="product-card__price">${{ p.price }}</p>
                                     <p class="product-card__description">{{ p.description|truncatechars:30 }}</p>
                                 </div>
