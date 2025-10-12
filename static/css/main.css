@@ -1063,8 +1063,11 @@ footer {
 .review-rating {
     display: flex;
     gap: 4px;
-    color: #FFC107;
     font-size: 20px;
+
+    .star--gold {
+        color: #FFC107;
+    }
 }
 
 .review-body {

@@ -1,11 +1,12 @@
 from django.views import View
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpRequest
+from django.shortcuts import render, get_object_or_404, redirect
 
-from .models import Product, Category
 from .forms import ReviewForm
+from .models import Product, Category
 
 
 class HomeView(View):
@@ -58,18 +59,28 @@ class GuidesView(View):
 
 class DetailsView(View):
     def get(self, request: HttpRequest, slug: str) -> HttpResponse:
-        object = get_object_or_404(Product, slug=slug)
+        obj = get_object_or_404(Product, slug=slug)
         review_form = ReviewForm()
         rating_choices = review_form.fields['rating'].choices
+        reviews = obj.reviews.all()
+        cant_review = obj.reviews.filter(user=request.user).exists()
         ctx = {
-            'object': object,
+            'object': obj,
             'review_form': review_form,
             'rating_choices': rating_choices,
+            'reviews': reviews,
+            'cant_review': cant_review,
         }
         return render(request, 'products/details.html', ctx)
 
 
 class AddReviewView(View):
     def post(self, request: HttpRequest) -> HttpResponse:
-        print(request.POST)
-        return HttpResponse(request)
+        next_url = request.GET.get('next') or '/'
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Rating added successfully')
+        else:
+            messages.error(request, 'Rating was not saved')
+        return redirect(next_url)

@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', function() {
             updateView();
         }
 
-        addCommentBtn = document.getElementById('add-review-btn'); // add-review-btn
-        addCommentSection = document.getElementById('reviews-form-section'); // add-review-btn
+        const addCommentBtn = document.getElementById('add-review-btn'); // add-review-btn
+        const addCommentSection = document.getElementById('reviews-form-section'); // add-review-btn
         addCommentBtn.addEventListener('click', () => {
             addCommentSection.classList.toggle('hide');
         });

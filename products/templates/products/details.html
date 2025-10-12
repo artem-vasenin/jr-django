@@ -1,5 +1,6 @@
 {% extends 'base/index.html' %}
 {% load static %}
+{% load range_tags %}
 
 {% block title %}Products{% endblock %}
 
@@ -34,21 +35,26 @@
             <button class="quantity-btn" data-action="increase" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
           </div>
         </div>
-        <div class="review">
-            <button class="button add-review-button" id="add-review-btn">
-                <i class="fa-solid fa-message"></i>
-                <span>Add Review</span>
-            </button>
-        </div>
+            {% if not cant_review %}
+                <div class="review">
+                    <button class="button add-review-button" id="add-review-btn">
+                        <i class="fa-solid fa-message"></i>
+                        <span>Add Review</span>
+                    </button>
+                </div>
+            {% endif %}
         {% endif %}
       </div>
     </section>
 
     <!-- Latest Reviews Section -->
+    {% if user.is_authenticated and not cant_review %}
     <section class="reviews-form-section hide" id="reviews-form-section">
         <div class="review-form">
-            <form action="{% url 'products:add-review' %}" class="review-form">
+            <form action="{% url 'products:add-review' %}?next={{ request.path }}" method="post" class="review-form">
                 {% csrf_token %}
+                <input hidden="hidden" name="{{ review_form.user.name }}" value="{{ user.pk }}" />
+                <input hidden="hidden" name="{{ review_form.product.name }}" value="{{ object.pk }}" />
                 <div class="Rating">
                     {% for value, label in rating_choices %}
                         <label>
@@ -68,25 +74,36 @@
             </form>
         </div>
     </section>
+    {% endif %}
 
     <section class="reviews-section">
       <h2 class="reviews-title">Latest reviews</h2>
-      <div class="reviews-grid">
-        <!-- Review Card 1 -->
-        <div class="review-card">
-          <div class="review-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-          </div>
-          <div class="review-body">
-            <h4 class="review-heading">The Perfect Sweet Spot</h4>
-            <p class="review-text">60L is my favorite caramel malt. It's not too light and not too dark. It provides the perfect balance of sweetness and caramel flavor for my Amber Ales. The color comes out just gorgeous.</p>
-          </div>
-          <div class="review-author">
-            <img src="{% static '/img/tmp2.svg' %}" alt="User avatar" class="author-avatar">
-            <span class="author-name">AmberAleFanatic</span>
-          </div>
-        </div>
-      </div>
+        {% if reviews %}
+            {% for r in reviews %}
+            <div class="reviews-grid">
+                <div class="review-card">
+                  <div class="review-rating">
+                    {% for i in 5|times %}
+                        {% if i < r.rating %}
+                            <i class="fa-solid fa-star star star--gold"></i>
+                        {% else %}
+                            <i class="fa-solid fa-star star star--gray"></i>
+                        {% endif %}
+                    {% endfor %}
+                  </div>
+                  <div class="review-body">
+                    <p class="review-text">{{ r.comment|linebreaks }}</p>
+                  </div>
+                  <div class="review-author">
+                    <img src="{% static '/img/icons/User_alt.svg' %}" alt="User Account" class="author-avatar">
+                    <span class="author-name">{{ r.user.username }}</span>
+                  </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+          <div class="reviews-empty">Reviews list is empty</div>
+        {% endif %}
     </section>
   </div>
 </main>
