@@ -71,6 +71,7 @@ class DetailsView(View):
             'reviews': reviews,
             'cant_review': cant_review,
         }
+
         return render(request, 'products/details.html', ctx)
 
 
@@ -83,4 +84,5 @@ class AddReviewView(View):
             messages.success(request, 'Rating added successfully')
         else:
             messages.error(request, 'Rating was not saved')
+
         return redirect(next_url)

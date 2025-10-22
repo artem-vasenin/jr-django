@@ -26,7 +26,7 @@ class UserLoginView(AnonymousRequiredMixin, View):
 
             try:
                 user = User.objects.get(email=email)
-            except User.DoesNotExist:
+            except (User.DoesNotExist, User.MultipleObjectsReturned):
                 form.add_error(None, 'Неверный email или пароль')
                 return render(request, self.template_name, {'form': form})
 
@@ -101,7 +101,7 @@ class AccountView(AuthenticatedRequiredMixin, View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request: HttpRequest) -> HttpResponse:
-        form = AccountForm(request.POST)
+        form = AccountForm(request.POST, request.FILES)
         if form.is_valid():
             first_name = form.cleaned_data.get('first_name')
             last_name = form.cleaned_data.get('last_name')
@@ -109,6 +109,7 @@ class AccountView(AuthenticatedRequiredMixin, View):
             phone = form.cleaned_data.get('phone')
             city = form.cleaned_data.get('city')
             address = form.cleaned_data.get('address')
+            image = form.cleaned_data.get('image')
 
             if User.objects.filter(Q(email=email) & ~Q(pk=request.user.pk)).exists():
                 form.add_error(None, 'Такой email уже занят')
@@ -125,7 +126,9 @@ class AccountView(AuthenticatedRequiredMixin, View):
             user.profile.phone = phone
             user.profile.city = city
             user.profile.address = address
+            user.profile.image = image
             user.save()
             messages.success(request, 'Category changed successfully')
+            return redirect('accounts:account')
 
         return render(request, self.template_name, {'form': form})

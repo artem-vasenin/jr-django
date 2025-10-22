@@ -104,7 +104,11 @@
                     <p class="review-text">{{ r.comment|linebreaks }}</p>
                   </div>
                   <div class="review-author">
-                    <img src="{% static '/img/icons/User_alt.svg' %}" alt="User Account" class="author-avatar">
+                    {% if user.profile.image %}
+                        <img class="author-avatar" src="{{ user.profile.image.url }}" alt="img"/>
+                    {% else %}
+                        <img class="author-avatar" src="{% static '/img/icons/User_alt.svg' %}" alt="User Account">
+                    {% endif %}
                     <span class="author-name">{{ r.user.username }}</span>
                   </div>
                 </div>

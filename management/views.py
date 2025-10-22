@@ -20,6 +20,7 @@ class ManagementProductsView(SuperuserRequiredMixin, View):
         paginator = Paginator(lst, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
+
         return render(request, 'management/products.html', {'page_obj': page_obj})
 
 
@@ -28,6 +29,7 @@ class ManagementProductView(SuperuserRequiredMixin, View):
 
     def get(self, request: HttpRequest, slug: str) -> HttpResponse:
         obj = Product.objects.filter(slug=slug).first()
+
         if not obj:
             messages.error(request, 'Product does not found')
             return redirect('management:management-products')
@@ -42,6 +44,7 @@ class ManagementProductView(SuperuserRequiredMixin, View):
             'image': obj.image,
         }
         form = ProductForm(initial=initial)
+
         return render(request, self.template_name, {'form': form, 'object': obj})
 
     def post(self, request: HttpRequest, slug: str):
@@ -53,16 +56,20 @@ class ManagementProductView(SuperuserRequiredMixin, View):
                 if form.is_valid():
                     form.save()
                     messages.success(request, 'Product was changed')
+
                     return redirect('management:management-products')
             elif request.POST.get('action') == 'hide':
                 obj.is_active = False
                 obj.save()
                 messages.success(request, 'Product was hidden')
+
                 return redirect('management:management-products')
             elif request.POST.get('action') == 'delete':
                 obj.delete()
                 messages.success(request, 'Product deleted successfully')
+
                 return redirect('management:management-products')
+
         return redirect('management:management-products')
 
 
@@ -91,6 +98,7 @@ class ManagementCategoriesView(SuperuserRequiredMixin, View):
         paginator = Paginator(categories_list, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
+
         return render(request, 'management/categories.html', {'page_obj': page_obj})
 
 
@@ -111,6 +119,7 @@ class ManagementCategoryView(SuperuserRequiredMixin, View):
         category = Category.objects.filter(slug=slug).first()
         if not category:
             messages.error(request, 'Category does not found')
+
             return render(request, self.template_name, {'form': CategoryForm(request.POST)})
 
         form = CategoryForm(request.POST, instance=category)
@@ -119,6 +128,7 @@ class ManagementCategoryView(SuperuserRequiredMixin, View):
             messages.success(request, 'Category added successfully')
 
             return redirect('management:management-categories')
+
         return render(request, self.template_name, {'form': form})
 
 
@@ -136,6 +146,7 @@ class ManagementAddCategoryView(SuperuserRequiredMixin, View):
             messages.success(request, 'Category added successfully')
 
             return redirect('management:management-categories')
+
         return render(request, self.template_name, {'form': form})
 
 

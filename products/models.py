@@ -11,11 +11,15 @@ def product_image_path(instance, filename):
     return os.path.join('products', instance.slug or 'temp', filename)
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True, verbose_name='Name')
-    slug = models.SlugField(max_length=100, unique=True, blank=True)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=100, unique=True, verbose_name='Название')
+    slug = models.SlugField(max_length=100, unique=True, blank=True, verbose_name='Slug')
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children', verbose_name='Родитель')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
+
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -32,16 +36,20 @@ class Category(models.Model):
         return self.name
 
 class Product(models.Model):
-    name = models.CharField(max_length=100, unique=True, verbose_name='Name')
-    slug = models.SlugField(max_length=100, unique=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-    price = models.DecimalField(max_digits=9, decimal_places=2)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    is_active = models.BooleanField(default=True, blank=True)
-    stock = models.IntegerField(default=0, blank=True)
-    image = models.ImageField(upload_to=product_image_path, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=100, unique=True, verbose_name='Название')
+    slug = models.SlugField(max_length=100, unique=True, blank=True, verbose_name='Slug')
+    description = models.TextField(null=True, blank=True, verbose_name='Описание')
+    price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Цена')
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Категория')
+    is_active = models.BooleanField(default=True, blank=True, verbose_name='Активен')
+    stock = models.IntegerField(default=0, blank=True, verbose_name='Количество')
+    image = models.ImageField(upload_to=product_image_path, null=True, blank=True, verbose_name='Изображение')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
+
+    class Meta:
+        verbose_name = "Товар"
+        verbose_name_plural = "Товары"
 
     @property
     def rating(self):
@@ -53,11 +61,15 @@ class Product(models.Model):
 
 
 class Review(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
-    comment = models.TextField(max_length=999)
-    created_at = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews', verbose_name='Товар')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)], verbose_name='Рейтинг')
+    comment = models.TextField(max_length=999, verbose_name='Комментарий')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+
+    class Meta:
+        verbose_name = "Отзыв"
+        verbose_name_plural = "Отзывы"
 
 
 def pre_save_product_slug(sender, instance, **kwargs):

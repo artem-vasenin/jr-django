@@ -1,13 +1,19 @@
+import os
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 
 
+def image_path(instance, filename):
+    return os.path.join('accounts', instance.user.username or 'temp', filename)
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    city = models.CharField(max_length=100, null=True, blank=True, verbose_name='City')
-    address = models.CharField(max_length=300, null=True, blank=True, verbose_name='Shipping address')
-    phone = models.CharField(max_length=11, null=True, blank=True, verbose_name='Phone number',
+    city = models.CharField(max_length=100, null=True, blank=True, verbose_name='Город')
+    address = models.CharField(max_length=300, null=True, blank=True, verbose_name='Адрес доставки')
+    image = models.ImageField(upload_to=image_path, null=True, blank=True, verbose_name='Аватар')
+    phone = models.CharField(max_length=11, null=True, blank=True, verbose_name='Телефон',
         validators=[
             RegexValidator(
                 regex=r'^79\d{9}$',
@@ -15,6 +21,10 @@ class Profile(models.Model):
             ),
         ]
     )
+
+    class Meta:
+        verbose_name = "Профиль"
+        verbose_name_plural = "Профили"
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}' if self.user.first_name else self.user.username

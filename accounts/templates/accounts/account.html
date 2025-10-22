@@ -23,7 +23,7 @@
       <div id="account-info" class="tab-pane active">
         <div class="account-form-container">
           <h2 class="account-form-title">Personal Info</h2>
-          <form id="account-info-form" method="post">
+          <form id="account-info-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for error in form.non_field_errors %}
               <div class="error">{{ error }}</div>
@@ -51,6 +51,17 @@
             <div class="checkout-form-group">
               <label for="coty">City</label>
               {{ form.city }}
+            </div>
+            <div class="checkout-form-group image-group">
+                <div class="image-field">
+                  <label for="image">Avatar</label>
+                  {{ form.image }}
+                </div>
+                {% if user.profile.image %}
+                <div class="image-preview">
+                    <img src="{{ user.profile.image.url }}" alt="img"/>
+                </div>
+                {% endif %}
             </div>
             <div class="checkout-form-group">
               <label for="address">Shipping address</label>

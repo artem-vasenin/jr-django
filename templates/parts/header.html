@@ -9,15 +9,19 @@
       <ul>
         <li><a href="{% url 'home' %}">Products</a></li>
         <li><a href="{% url 'products:guides' %}">Guides & Recipes</a></li>
-        <li><a href="#">Community</a></li>
-        <li><a href="#">Resources</a></li>
-        <li><a href="#">Contact</a></li>
+        {% if user.is_superuser %}
+        <li><a href="{% url 'management:management' %}">Management</a></li>
+        {% endif %}
       </ul>
     </nav>
     {% if user.is_authenticated %}
     <div class="header__user-actions">
       <a href="{% url 'accounts:account' %}" class="user-icon" aria-label="My Account">
-        <img src="{% static '/img/icons/User_alt.svg' %}" alt="User Account">
+        {% if user.profile.image %}
+            <img class="avatar img" src="{{ user.profile.image.url }}" alt="img"/>
+        {% else %}
+            <img class="avatar icon" src="{% static '/img/icons/User_alt.svg' %}" alt="User Account">
+        {% endif %}
       </a>
       <a href="{% url 'orders:cart' %}" class="cart-icon" aria-label="Shopping Cart">
         <img src="{% static '/img/icons/Shopping_bag.svg' %}" alt="Shopping Cart">

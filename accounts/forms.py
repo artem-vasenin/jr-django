@@ -1,6 +1,8 @@
 from django import forms
 from django.core.validators import RegexValidator
 
+from .models import Profile
+
 
 class UserLoginForm(forms.Form):
     email = forms.EmailField(
@@ -77,4 +79,14 @@ class AccountForm(forms.Form):
         max_length=300,
         label="Shipping address",
         widget=forms.Textarea(attrs={'class': 'Textarea', 'placeholder': 'Shipping address', 'id': 'address', 'rows': '4'})
+    )
+    image = forms.ImageField(
+        label='Avatar',
+        widget=forms.FileInput(
+            attrs={
+                'id': 'image-upload-input',
+                'class': 'image-field',
+                'accept': 'image/*',
+            }
+        ),
     )
