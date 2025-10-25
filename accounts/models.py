@@ -12,6 +12,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     city = models.CharField(max_length=100, null=True, blank=True, verbose_name='Город')
     address = models.CharField(max_length=300, null=True, blank=True, verbose_name='Адрес доставки')
+    balance = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Баланс', null=True, blank=True)
     image = models.ImageField(upload_to=image_path, null=True, blank=True, verbose_name='Аватар')
     phone = models.CharField(max_length=11, null=True, blank=True, verbose_name='Телефон',
         validators=[

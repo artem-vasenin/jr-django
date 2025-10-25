@@ -60,7 +60,7 @@ class ManagementProductView(SuperuserRequiredMixin, View):
                     return redirect('management:management-products')
             elif request.POST.get('action') == 'hide':
                 obj.is_active = False
-                obj.save()
+                obj.save(update_fields=['is_active'])
                 messages.success(request, 'Product was hidden')
 
                 return redirect('management:management-products')

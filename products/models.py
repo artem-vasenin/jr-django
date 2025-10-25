@@ -13,7 +13,7 @@ def product_image_path(instance, filename):
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name='Название')
     slug = models.SlugField(max_length=100, unique=True, blank=True, verbose_name='Slug')
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children', verbose_name='Родитель')
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children', verbose_name='Родитель')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
 
@@ -70,6 +70,9 @@ class Review(models.Model):
     class Meta:
         verbose_name = "Отзыв"
         verbose_name_plural = "Отзывы"
+
+    def __str__(self):
+        return f'{self.product.name}: "{self.comment[:30]}" ({self.user.username})'
 
 
 def pre_save_product_slug(sender, instance, **kwargs):
