@@ -60,7 +60,6 @@ class Payment(models.Model):
         FAILED = 'failed', 'Отказано'
         CANCELED = 'canceled', 'Отменён'
 
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments', verbose_name='Заказ')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments', verbose_name='Заказчик')
     method = models.CharField(max_length=50, verbose_name='Метод')
     transaction_id = models.CharField(max_length=255, verbose_name='Транзакция')
@@ -74,5 +73,5 @@ class Payment(models.Model):
         verbose_name_plural = "Оплаты"
 
     def __str__(self):
-        return f'Платёж к заказу {self.order.order_id} от {self.created_at} на сумму {self.amount}'
+        return f'Платёж от {self.created_at} на сумму {self.amount}'
 
