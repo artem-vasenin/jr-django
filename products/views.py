@@ -1,12 +1,14 @@
 from django.views import View
+from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.db.models.functions import Coalesce
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg, Count, Q, Value, FloatField
-from django.db.models.functions import Coalesce
 
 from .forms import ReviewForm
+from orders.cert_session import Cart
 from .models import Product, Category
 
 
@@ -68,6 +70,8 @@ class GuidesView(View):
 class DetailsView(View):
     def get(self, request: HttpRequest, slug: str) -> HttpResponse:
         obj = get_object_or_404(Product, slug=slug)
+        cart = Cart(request)
+        print(cart.in_cart(obj))
         review_form = ReviewForm()
         rating_choices = review_form.fields['rating'].choices
         reviews = obj.reviews.order_by('-id')[:3]
@@ -82,6 +86,7 @@ class DetailsView(View):
             'rating_choices': rating_choices,
             'reviews': reviews,
             'cant_review': cant_review,
+            'in_cart': cart.in_cart(obj),
         }
 
         return render(request, 'products/details.html', ctx)

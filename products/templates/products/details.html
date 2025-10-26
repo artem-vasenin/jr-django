@@ -34,15 +34,38 @@
         </div>
         {% if user.is_authenticated %}
         <div class="cart-controls">
-          <button class="button button--primary add-to-cart-button" id="add-to-cart-btn">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <span>Add to Cart</span>
-          </button>
-          <div class="quantity-counter is-hidden" id="quantity-counter">
-            <button class="quantity-btn" data-action="decrease" aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button>
-            <span class="quantity-value">1 in cart</span>
-            <button class="quantity-btn" data-action="increase" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
-          </div>
+            <form action="{% url 'orders:cart' %}" method="post">
+                {% csrf_token %}
+                <input hidden="hidden" name="product_id" value="{{ object.pk }}">
+                {% if not in_cart %}
+              <button
+                  class="button button--primary add-to-cart-button"
+                  id="add-to-cart-btn"
+                  type="submit"
+                  name="action"
+                  value="inc"
+              >
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>Add to Cart</span>
+              </button>
+                {% else %}
+                  <div class="quantity-counter" id="quantity-counter">
+                    <button
+                        class="quantity-btn"
+                        type="submit"
+                        name="action"
+                        value="dec"
+                    ><i class="fa-solid fa-minus"></i></button>
+                    <span class="quantity-value">{{ in_cart }} in cart</span>
+                    <button
+                        class="quantity-btn"
+                        type="submit"
+                        name="action"
+                        value="inc"
+                    ><i class="fa-solid fa-plus"></i></button>
+                  </div>
+                {% endif %}
+            </form>
         </div>
             {% if not cant_review %}
                 <div class="review">
