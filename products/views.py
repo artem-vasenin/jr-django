@@ -1,9 +1,10 @@
 from django.views import View
-from django.db.models import Q
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Avg, Count, Q, Value, FloatField
+from django.db.models.functions import Coalesce
 
 from .forms import ReviewForm
 from .models import Product, Category
@@ -24,7 +25,14 @@ class HomeView(View):
         elif sort == 'd_price':
             products = products.order_by('-price')
         elif sort == 'rating':
-            products = products.order_by('-rating')
+            products = (
+                products
+                .annotate(
+                    avg_rating=Coalesce(Avg('reviews__rating'), Value(-1), output_field=FloatField()),
+                    has_rating=Count('reviews', filter=Q(reviews__rating__isnull=False)),
+                )
+                .order_by('-has_rating', '-avg_rating')
+            )
         else:
             products = products.order_by('-created_at')
 
@@ -63,7 +71,11 @@ class DetailsView(View):
         review_form = ReviewForm()
         rating_choices = review_form.fields['rating'].choices
         reviews = obj.reviews.order_by('-id')[:3]
-        cant_review = obj.reviews.filter(user=request.user).exists()
+        cant_review = False
+
+        if request.user.is_authenticated and obj.reviews.filter(user=request.user).exists():
+            cant_review = True
+
         ctx = {
             'object': obj,
             'review_form': review_form,

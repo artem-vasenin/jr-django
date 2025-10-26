@@ -88,8 +88,8 @@
     <section class="reviews-section">
       <h2 class="reviews-title">Latest reviews</h2>
         {% if reviews %}
-            {% for r in reviews %}
             <div class="reviews-grid">
+            {% for r in reviews %}
                 <div class="review-card">
                   <div class="review-rating">
                     {% for i in 5|times %}
@@ -104,16 +104,16 @@
                     <p class="review-text">{{ r.comment|linebreaks }}</p>
                   </div>
                   <div class="review-author">
-                    {% if user.profile.image %}
-                        <img class="author-avatar" src="{{ user.profile.image.url }}" alt="img"/>
+                    {% if r.user.profile.image %}
+                        <img class="author-avatar" src="{{ r.user.profile.image.url }}" alt="img"/>
                     {% else %}
                         <img class="author-avatar" src="{% static '/img/icons/User_alt.svg' %}" alt="User Account">
                     {% endif %}
                     <span class="author-name">{{ r.user.username }}</span>
                   </div>
                 </div>
-            </div>
             {% endfor %}
+            </div>
         {% else %}
           <div class="reviews-empty">Reviews list is empty</div>
         {% endif %}
