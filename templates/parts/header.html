@@ -24,6 +24,9 @@
         {% endif %}
       </a>
       <a href="{% url 'orders:cart' %}" class="cart-icon" aria-label="Shopping Cart">
+          {% if cart_len %}
+              <span class="counter">{{ cart_len }}</span>
+          {% endif %}
         <img src="{% static '/img/icons/Shopping_bag.svg' %}" alt="Shopping Cart">
       </a>
     </div>
