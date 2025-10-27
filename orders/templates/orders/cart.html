@@ -21,16 +21,38 @@
               <span class="cart-item__price-tag">{{ p.product.unit }}</span>
             </div>
           </div>
-          <div class="cart-item__actions">
-            <div class="cart-item__quantity-selector">
-              <button class="quantity-btn-cart"><i class="fa-solid fa-minus"></i></button>
-              <span class="quantity-value-cart">{{ p.qty }}</span>
-              <button class="quantity-btn-cart"><i class="fa-solid fa-plus"></i></button>
-            </div>
-            <button class="button--remove">
-              Remove <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
+            <form action="{% url 'orders:cart' %}" method="post" class="cart-item__actions">
+                {% csrf_token %}
+                <input hidden="hidden" name="product_id" value="{{ p.product.pk }}">
+                <input hidden="hidden" name="next_page" value="orders:cart">
+                <div class="cart-item__quantity-selector">
+                  <button
+                      class="quantity-btn-cart"
+                      type="submit"
+                      name="action"
+                      value="dec"
+                  >
+                      <i class="fa-solid fa-minus"></i>
+                  </button>
+                  <span class="quantity-value-cart">{{ p.qty }}</span>
+                  <button
+                      class="quantity-btn-cart"
+                      type="submit"
+                      name="action"
+                      value="inc"
+                  >
+                      <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                <button
+                    class="button--remove"
+                    type="submit"
+                    name="action"
+                    value="del"
+                >
+                  Remove <i class="fa-solid fa-xmark"></i>
+                </button>
+        </form>
         </div>
       </div>
     {% endfor %}

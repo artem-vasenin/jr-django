@@ -14,12 +14,15 @@ class CartView(View):
     def post(self, request: HttpRequest) -> HttpResponse:
         cart = Cart(request)
         product_id = request.POST['product_id']
+        next_page = request.POST['next_page']
         product = get_object_or_404(Product, id=product_id)
         if request.POST.get('action') == 'inc':
             cart.change(product)
         if request.POST.get('action') == 'dec':
             cart.change(product, True)
-        return redirect('products:product', product.slug)
+        if request.POST.get('action') == 'del':
+            cart.remove(product)
+        return redirect(next_page) if next_page else redirect('products:product', product.slug)
 
     def delete(self, request: HttpRequest, pk: int) -> HttpResponse:
         cart = Cart(request)
