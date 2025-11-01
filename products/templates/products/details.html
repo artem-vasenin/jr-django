@@ -16,7 +16,8 @@
         <div class="product-title-price">
           <h1 class="product-name">{{ object.name }}</h1>
           <div class="price-section">
-            <span class="price-tag">{{ object.category.name }}</span>
+            <div class="price-category">Category: {{ object.category.name }}</div>
+            <span class="price-tag">{{ object.unit }}</span>
             <div class="review-rating">
                 {% for i in 5|times %}
                     {% if i < object.rating %}
