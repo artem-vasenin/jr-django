@@ -36,6 +36,7 @@ class Order(models.Model):
     def __str__(self):
         return f'Заказ от {self.created_at} - {self.user.username}'
 
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', verbose_name='Заказ')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
@@ -53,6 +54,19 @@ class OrderItem(models.Model):
     def __str__(self):
         return f'Продукт: {self.product.name} ({self.quantity} {self.product.unit}) - ${self.total_price}'
 
+
+class PaymentMethod(models.Model):
+    name = models.CharField(max_length=150)
+    code = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        verbose_name = "Метод оплаты"
+        verbose_name_plural = "Методы оплаты"
+
+    def __str__(self):
+        return self.code
+
+
 class Payment(models.Model):
     class Status(models.TextChoices):
         PENDING = 'pending', 'Ожидает'
@@ -61,7 +75,7 @@ class Payment(models.Model):
         CANCELED = 'canceled', 'Отменён'
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments', verbose_name='Заказчик')
-    method = models.CharField(max_length=50, verbose_name='Метод')
+    method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, verbose_name='Метод')
     transaction_id = models.CharField(max_length=255, verbose_name='Транзакция')
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING, verbose_name='Статус')
     amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Сумма')

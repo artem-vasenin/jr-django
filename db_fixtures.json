@@ -321,5 +321,29 @@
       "user_id": 3,
       "created_at": "2025-10-21T00:00:00Z"
     }
+  },
+  {
+    "model": "orders.paymentMethod",
+    "pk": 1,
+    "fields": {
+      "name": "Debit Card",
+      "code": "debit_card"
+    }
+  },
+  {
+    "model": "orders.paymentMethod",
+    "pk": 2,
+    "fields": {
+      "name": "Digital Wallet",
+      "code": "digital_wallet"
+    }
+  },
+  {
+    "model": "orders.paymentMethod",
+    "pk": 3,
+    "fields": {
+      "name": "Cash On Delivery",
+      "code": "cash_on_delivery"
+    }
   }
 ]

@@ -1,8 +1,6 @@
 from django import forms
 from django.core.validators import RegexValidator
 
-from .models import Profile
-
 
 class UserLoginForm(forms.Form):
     email = forms.EmailField(
