@@ -6,6 +6,18 @@ from django.db.models import Sum, F, DecimalField, ExpressionWrapper
 from products.models import Product
 
 
+class PaymentMethod(models.Model):
+    name = models.CharField(max_length=150)
+    code = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        verbose_name = "Метод оплаты"
+        verbose_name_plural = "Методы оплаты"
+
+    def __str__(self):
+        return self.code
+
+
 class Order(models.Model):
     class Status(models.TextChoices):
         PENDING = 'pending', 'Ожидает'
@@ -17,6 +29,10 @@ class Order(models.Model):
     order_id = models.CharField(max_length=30, null=True, blank=True, verbose_name='Номер заказа')
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING, verbose_name='Статус')
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Заказчик', related_name='orders')
+    city = models.CharField(max_length=100, null=True, blank=True, verbose_name='Город')
+    address = models.CharField(max_length=300, null=True, blank=True, verbose_name='Адрес доставки')
+    phone = models.CharField(max_length=11, null=True, blank=True, verbose_name='Телефон')
+    method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, verbose_name='Метод')
     invoice_number = models.IntegerField(default=0, verbose_name='Инвойс')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
@@ -53,18 +69,6 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f'Продукт: {self.product.name} ({self.quantity} {self.product.unit}) - ${self.total_price}'
-
-
-class PaymentMethod(models.Model):
-    name = models.CharField(max_length=150)
-    code = models.CharField(max_length=50, unique=True)
-
-    class Meta:
-        verbose_name = "Метод оплаты"
-        verbose_name_plural = "Методы оплаты"
-
-    def __str__(self):
-        return self.code
 
 
 class Payment(models.Model):

@@ -52,10 +52,15 @@ class Cart:
     def __str__(self):
         return json.dumps(self.cart, indent=2, ensure_ascii=False)
 
-    def items(self):
+    def get_products(self):
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
         cart = self.cart.copy()
+
+        return products, cart
+
+    def items(self):
+        products, cart = self.get_products()
 
         for p in products:
             item = cart[str(p.pk)]

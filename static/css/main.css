@@ -1587,6 +1587,15 @@ footer {
     gap: 32px;
 }
 
+.balance {
+    font-size: 22px;
+
+    .balance__value {
+        font-weight: 600;
+        font-size: 28px;
+    }
+}
+
 /* Tabs Navigation */
 .account-tabs {
     display: flex;

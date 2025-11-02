@@ -4,6 +4,13 @@ from django.core.validators import RegexValidator
 from .models import PaymentMethod
 
 
+class ChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.name
+
+    def prepare_value(self, value):
+        return getattr(value, 'pk', value)
+
 class OrderForm(forms.Form):
     phone = forms.CharField(
         max_length=11,
@@ -29,7 +36,8 @@ class OrderForm(forms.Form):
         label="Shipping address",
         widget=forms.Textarea(attrs={'class': 'Textarea', 'placeholder': 'Shipping address', 'id': 'address', 'rows': '4'})
     )
-    method = forms.ModelChoiceField(
+    method = ChoiceField(
+        required=True,
         queryset=PaymentMethod.objects.all(),
         widget=forms.RadioSelect(attrs={'class': 'payment-block'}),
         empty_label=None,

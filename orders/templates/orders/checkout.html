@@ -7,59 +7,55 @@
     <div class="checkout-container">
         <h1 class="checkout-title">Order Details</h1>
 
-        {{ form.as_p }}
-
-        <form id="checkout-form">
-            <!-- Shipping Information -->
-            <section class="checkout-section">
+        <form class="checkout-form" method="post">
+            {% csrf_token %}
+            <section class="checkout-section mb-3">
                 <h2 class="checkout-section__title">Shipping information</h2>
+                {% for error in form.non_field_errors %}
+                  <div class="error">{{ error }}</div>
+                {% endfor %}
                 <div class="checkout-form-group">
                     <label for="full-name">Full Name</label>
-                    <input type="text" id="full-name" name="full_name" class="Input" placeholder="Value"  required>
+                    <input
+                        type="text"
+                        id="full-name"
+                        class="Input"
+                        value="{{ user.first_name }} {{ user.last_name }}"
+                        readonly>
                 </div>
                 <div class="checkout-form-group">
-                    <label for="phone">Phone number</label>
-                    <input type="tel" id="phone" name="phone" class="Input" placeholder="Value" required>
+                    <label for="phone">{{ form.phone.label }}</label>
+                    {{ form.phone }}
                 </div>
                 <div class="checkout-form-group">
-                    <label for="city">City</label>
-                    <input type="text" id="city" name="city" class="Input" placeholder="Value" required>
+                    <label for="city">{{ form.city.label }}</label>
+                    {{ form.city }}
                 </div>
                 <div class="checkout-form-group">
-                    <label for="address">Shipping address</label>
-                    <textarea id="address" name="address" class="Textarea" placeholder="Value" rows="3" required></textarea>
+                    <label for="address">{{ form.address.label }}</label>
+                    {{ form.address }}
                 </div>
             </section>
-
             <!-- Payment Method -->
-            <section class="checkout-section">
+            <section class="checkout-section mb-3">
                 <h2 class="checkout-section__title">Payment Method</h2>
                 <div class="payment-options">
+                    {% for r in form.method %}
                     <label class="radio-option">
-                        <input type="radio" name="payment_method" value="debit" checked>
+                        {{ r.tag }}
                         <span class="radio-custom"></span>
-                        <span class="radio-label">Debit Card</span>
+                        <span class="radio-label">{{ r.choice_label }}</span>
                     </label>
-                    <label class="radio-option">
-                        <input type="radio" name="payment_method" value="wallet">
-                        <span class="radio-custom"></span>
-                        <span class="radio-label">Digital Wallet</span>
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="payment_method" value="cod">
-                        <span class="radio-custom"></span>
-                        <span class="radio-label">Cash On Delivery</span>
-                    </label>
+                    {% endfor %}
                 </div>
             </section>
-
             <!-- Order Summary -->
             <section class="checkout-summary">
                 <h2 class="checkout-section__title">Order Summary</h2>
                 <div class="summary-details">
                     <div class="summary-total">
                         <p>Total</p>
-                        <p>$32.95</p>
+                        <p>${{ cart.get_total_price }}</p>
                     </div>
                     <button type="submit" class="button button--primary button--pay">Pay</button>
                 </div>

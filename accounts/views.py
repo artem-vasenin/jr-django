@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 
 from .mixins import AnonymousRequiredMixin, AuthenticatedRequiredMixin
 from .forms import UserLoginForm, RegisterForm, AccountForm
+from orders.models import Order
 
 
 class UserLoginView(AnonymousRequiredMixin, View):
@@ -84,6 +85,7 @@ class AccountView(AuthenticatedRequiredMixin, View):
 
     def get(self, request: HttpRequest) -> HttpResponse:
         user = request.user
+        orders = Order.objects.filter(user_id=user.pk)
 
         profile = getattr(user, 'profile', None)
         initial = {
@@ -98,7 +100,7 @@ class AccountView(AuthenticatedRequiredMixin, View):
 
         form = AccountForm(initial=initial)
 
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'orders': orders})
 
     def post(self, request: HttpRequest) -> HttpResponse:
         form = AccountForm(request.POST, request.FILES)
@@ -126,7 +128,8 @@ class AccountView(AuthenticatedRequiredMixin, View):
             user.profile.phone = phone
             user.profile.city = city
             user.profile.address = address
-            user.profile.image = image
+            if image:
+                user.profile.image = image
             user.save()
             messages.success(request, 'Category changed successfully')
             return redirect('accounts:account')

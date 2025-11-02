@@ -53,7 +53,9 @@ class AccountForm(forms.Form):
         max_length=11,
         required=True,
         label='Phone',
-        widget=forms.TextInput(attrs={'class': 'Input', 'placeholder': 'Phone', 'id': 'phone'}),
+        widget=forms.TextInput(
+            attrs={'class': 'Input', 'placeholder': '79520000000', 'id': 'phone'}
+        ),
         validators=[
             RegexValidator(
                 regex=r'^79\d{9}$',
@@ -64,7 +66,9 @@ class AccountForm(forms.Form):
     email = forms.EmailField(
         required=True,
         label='Email',
-        widget=forms.EmailInput(attrs={'class': 'Input', 'placeholder': 'Email', 'id': 'email'})
+        widget=forms.EmailInput(
+            attrs={'class': 'Input', 'placeholder': 'my@gmail.com', 'id': 'email'}
+        )
     )
     city = forms.CharField(
         required=True,
@@ -79,6 +83,7 @@ class AccountForm(forms.Form):
         widget=forms.Textarea(attrs={'class': 'Textarea', 'placeholder': 'Shipping address', 'id': 'address', 'rows': '4'})
     )
     image = forms.ImageField(
+        required=False,
         label='Avatar',
         widget=forms.FileInput(
             attrs={

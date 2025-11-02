@@ -7,6 +7,10 @@
 <main class="account-page-wrapper">
 
   <div class="account-container">
+    <div class="balance">
+        <span class="balance__label">Balance:</span>
+        <span class="balance__value">${{ user.profile.balance }}</span>
+    </div>
     <!-- Tabs Navigation -->
     <div class="account-tabs">
         <button class="account-tab active" data-tab-target="#account-info">Account Information</button>
@@ -30,22 +34,22 @@
             {% endfor %}
 
             <div class="checkout-form-group">
-              <label for="first_name">First Name</label>
+              <label for="first_name">{{ form.first_name.label }}</label>
               {{ form.first_name }}
             </div>
             <div class="checkout-form-group">
-              <label for="last_name">Last Name</label>
+              <label for="last_name">{{ form.last_name.label }}</label>
               {{ form.last_name }}
             </div>
             <div class="checkout-form-group">
-              <label for="phone">Phone</label>
+              <label for="phone">{{ form.phone.label }}</label>
               {{ form.phone }}
                 {% for error in form.phone.errors %}
                 <div class="error">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="checkout-form-group">
-              <label for="email">Email</label>
+              <label for="email">{{ form.email.label }}</label>
               {{ form.email }}
             </div>
             <div class="checkout-form-group">
@@ -54,7 +58,7 @@
             </div>
             <div class="checkout-form-group image-group">
                 <div class="image-field">
-                  <label for="image">Avatar</label>
+                  <label for="image">{{ form.image.label }}</label>
                   {{ form.image }}
                 </div>
                 {% if user.profile.image %}
@@ -76,6 +80,7 @@
 
       <!-- Order History Panel -->
       <div id="order-history" class="tab-pane">
+        {% if orders %}
         <div class="order-history-table">
           <!-- Table Header -->
           <div class="order-table-header">
@@ -86,104 +91,20 @@
           <!-- Table Body -->
           <div class="order-table-body">
             <!-- Example Row 1 -->
+            {% for o in orders %}
             <div class="order-table-row">
               <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
+                <span class="order-id">#{{ o.order_id }}</span>
+                <span class="order-date">{{ o.created_at }}</span>
               </div>
               <div class="order-table-cell">
-                <span class="order-status">Pending</span>
+                <span class="order-status">{{ o.status }}</span>
               </div>
               <div class="order-table-cell">
-                <span class="order-total">$100.00</span>
+                <span class="order-total">${{ o.total_price }}</span>
               </div>
             </div>
-            <!-- Example Row 2 -->
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Pending</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$90.00</span>
-              </div>
-            </div>
-            <!-- ... add more rows as needed ... -->
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Confirmed</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$140.00</span>
-              </div>
-            </div>
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Delivered</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$120.00</span>
-              </div>
-            </div>
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Shipped</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$120.00</span>
-              </div>
-            </div>
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Shipped</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$120.00</span>
-              </div>
-            </div>
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Shipped</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$120.00</span>
-              </div>
-            </div>
-            <div class="order-table-row">
-              <div class="order-table-cell">
-                <span class="order-id">#123232122033</span>
-                <span class="order-date">7 Mar 2025</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-status">Shipped</span>
-              </div>
-              <div class="order-table-cell">
-                <span class="order-total">$120.00</span>
-              </div>
-            </div>
+          {% endfor %}
           </div>
         </div>
         <!-- Pagination (simplified) -->
@@ -191,6 +112,9 @@
           <a href="#" class="pagination-link-account disabled">← Previous</a>
           <a href="#" class="pagination-link-account">Next →</a>
         </div>
+        {% else %}
+            <p>Orders list is empty</p>
+        {% endif %}
       </div>
     </div>
   </div>
