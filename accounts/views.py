@@ -3,6 +3,7 @@ from django.views import View
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth import authenticate, login, logout
@@ -109,9 +110,6 @@ class AccountBalanceView(View):
                     status='completed'
                 )
 
-                # request.user.profile.balance = amount
-                # request.user.save()
-
                 messages.success(request, f'Payment #{transaction_id} created')
                 return redirect('accounts:account')
             except Exception as e:
@@ -126,7 +124,11 @@ class AccountView(AuthenticatedRequiredMixin, View):
 
     def get(self, request: HttpRequest) -> HttpResponse:
         user = request.user
-        orders = Order.objects.filter(user_id=user.pk)
+        page_number = request.GET.get('page', 1)
+        per_page = 3
+        orders = Order.objects.filter(user_id=user.pk).order_by('-created_at')
+        paginator = Paginator(orders, per_page)
+        page_obj = paginator.get_page(page_number)
 
         profile = getattr(user, 'profile', None)
         initial = {
@@ -141,7 +143,18 @@ class AccountView(AuthenticatedRequiredMixin, View):
 
         form = AccountForm(initial=initial)
 
-        return render(request, self.template_name, {'form': form, 'orders': orders})
+        ctx = {
+            'form': form,
+            'orders': page_obj,
+            'has_next': page_obj.has_next(),
+            'has_previous': page_obj.has_previous(),
+            'next_page': f'?page={page_obj.next_page_number()}' if page_obj.has_next() else None,
+            'previous_page': f'?page={page_obj.previous_page_number()}' if page_obj.has_previous() else None,
+            'current_page': page_obj.number,
+            'total_pages': paginator.num_pages,
+        }
+
+        return render(request, self.template_name, ctx)
 
     def post(self, request: HttpRequest) -> HttpResponse:
         form = AccountForm(request.POST, request.FILES)

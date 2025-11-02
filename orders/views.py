@@ -1,15 +1,16 @@
-from django.contrib import messages
-from django.db import transaction
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpRequest
-from django.views import View
 import time
+from decimal import Decimal
+from django.views import View
+from django.db import transaction
+from django.contrib import messages
+from django.http import HttpResponse, HttpRequest
+from django.shortcuts import render, get_object_or_404, redirect
 
-from accounts.mixins import AuthenticatedRequiredMixin
+from .forms import OrderForm
 from .cert_session import Cart
 from products.models import Product
-from .forms import OrderForm
 from .models import PaymentMethod, Order, OrderItem
+from accounts.mixins import AuthenticatedRequiredMixin
 
 
 class CartView(View):
@@ -84,6 +85,15 @@ class CheckoutView(AuthenticatedRequiredMixin, View):
                             quantity=p['qty'],
                             price=p['price'],
                         )
+
+                    profile = getattr(request.user, 'profile', None)
+                    if profile:
+                        total = Decimal(order.total_price or 0)
+                        if profile.balance >= total > 0:
+                            profile.balance -= total
+                            profile.save(update_fields=['balance'])
+                            order.status = Order.Status.PAID
+                            order.save(update_fields=['status'])
 
                     cart.clear()
                     messages.success(request, f'Order {order.order_id} created')
