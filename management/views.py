@@ -50,7 +50,7 @@ class ManagementProductView(SuperuserRequiredMixin, View):
 
         return render(request, self.template_name, {'form': form, 'object': obj})
 
-    def post(self, request: HttpRequest, slug: str):
+    def post(self, request: HttpRequest, slug: str) -> HttpResponse:
         obj = Product.objects.filter(slug=slug).first()
 
         if obj:
@@ -84,7 +84,7 @@ class ManagementAddProductView(SuperuserRequiredMixin, View):
         form = ProductForm()
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request):
+    def post(self, request: HttpRequest) -> HttpResponse:
         form = ProductForm(request.POST, request.FILES)
 
         if form.is_valid():
@@ -111,7 +111,7 @@ class ManagementCategoryView(SuperuserRequiredMixin, View):
     """ Контроллер формы изменения категории каст.адм """
     template_name = 'management/category.html'
 
-    def get(self, request: HttpRequest, slug) -> HttpResponse:
+    def get(self, request: HttpRequest, slug: str) -> HttpResponse:
         category = Category.objects.filter(slug=slug).first()
         if not category:
             messages.error(request, 'Category does not found')
@@ -121,7 +121,7 @@ class ManagementCategoryView(SuperuserRequiredMixin, View):
         form = CategoryForm(initial=initial)
         return render(request, self.template_name, {'form': form, 'pk': category.pk})
 
-    def post(self, request: HttpRequest, slug) -> HttpResponse:
+    def post(self, request: HttpRequest, slug: str) -> HttpResponse:
         category = Category.objects.filter(slug=slug).first()
         if not category:
             messages.error(request, 'Category does not found')

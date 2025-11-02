@@ -89,7 +89,7 @@ class AccountBalanceView(View):
     """ Контроллер пополнения баланса пользователя """
     template_name = 'accounts/balance.html'
 
-    def get(self, request):
+    def get(self, request: HttpRequest) -> HttpResponse:
         first_method = PaymentMethod.objects.first()
         form = BalanceForm(initial={
             'method': first_method.pk if first_method else None
@@ -97,9 +97,9 @@ class AccountBalanceView(View):
 
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request):
+    def post(self, request: HttpRequest) -> HttpResponse:
         form = BalanceForm(request.POST)
-        print(request.POST)
+
         if form.is_valid():
             try:
                 transaction_id = f'{request.user.pk}_{int(time.time())}'
@@ -163,6 +163,7 @@ class AccountView(AuthenticatedRequiredMixin, View):
 
     def post(self, request: HttpRequest) -> HttpResponse:
         form = AccountForm(request.POST, request.FILES)
+
         if form.is_valid():
             first_name = form.cleaned_data.get('first_name')
             last_name = form.cleaned_data.get('last_name')

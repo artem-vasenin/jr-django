@@ -58,7 +58,7 @@ class CheckoutView(AuthenticatedRequiredMixin, View):
 
         return render(request, self.template_name, ctx)
 
-    def post(self, request):
+    def post(self, request: HttpRequest) -> HttpResponse:
         cart = Cart(request)
         form = OrderForm(request.POST)
 
