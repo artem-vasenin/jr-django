@@ -8,8 +8,16 @@
 
   <div class="account-container">
     <div class="balance">
-        <span class="balance__label">Balance:</span>
-        <span class="balance__value">${{ user.profile.balance }}</span>
+        <div class="balance__left">
+            <span class="balance__label">Balance:</span>
+            <span class="balance__value">${{ user.profile.balance }}</span>
+        </div>
+        <div class="balance__right">
+            <a
+                href="{% url 'accounts:balance' %}"
+                class="button button--primary"
+            >deposit into your account</a>
+        </div>
     </div>
     <!-- Tabs Navigation -->
     <div class="account-tabs">

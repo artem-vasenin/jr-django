@@ -1,0 +1,40 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+{% block title %}Account{% endblock %}
+
+{% block body %}
+<main class="checkout-page-wrapper">
+    <div class="checkout-container">
+        <h1 class="checkout-title">Order Details</h1>
+
+        <form class="checkout-form" method="post">
+            {% csrf_token %}
+            <section class="checkout-section mb-3">
+                <h2 class="checkout-section__title">Finance Information</h2>
+                {% for error in form.non_field_errors %}
+                  <div class="error">{{ error }}</div>
+                {% endfor %}
+                <div class="checkout-form-group">
+                    <label for="phone">{{ form.amount.label }}</label>
+                    {{ form.amount }}
+                </div>
+            </section>
+            <!-- Payment Method -->
+            <section class="checkout-section mb-3">
+                <h2 class="checkout-section__title">Payment Method</h2>
+                <div class="payment-options">
+                    {% for r in form.method %}
+                    <label class="radio-option">
+                        {{ r.tag }}
+                        <span class="radio-custom"></span>
+                        <span class="radio-label">{{ r.choice_label }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </section>
+            <button type="submit" class="button button--primary button--pay">Submit</button>
+        </form>
+    </div>
+</main>
+{% endblock %}

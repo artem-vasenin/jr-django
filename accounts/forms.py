@@ -1,6 +1,9 @@
 from django import forms
 from django.core.validators import RegexValidator
 
+from orders.forms import ChoiceField
+from orders.models import PaymentMethod
+
 
 class UserLoginForm(forms.Form):
     email = forms.EmailField(
@@ -92,4 +95,27 @@ class AccountForm(forms.Form):
                 'accept': 'image/*',
             }
         ),
+    )
+
+
+class BalanceForm(forms.Form):
+    amount = forms.DecimalField(
+        max_digits=9,
+        decimal_places=2,
+        required=True,
+        widget=forms.NumberInput(attrs={
+            'class': 'Input',
+            'placeholder': 'Price',
+            'id': 'price',
+            'step': '0.01',
+            'min': '0',
+            'max': '99999999',
+        })
+    )
+    method = ChoiceField(
+        required=True,
+        queryset=PaymentMethod.objects.all(),
+        widget=forms.RadioSelect(attrs={'class': 'payment-block'}),
+        empty_label=None,
+        label='Payment Method',
     )
