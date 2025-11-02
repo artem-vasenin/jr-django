@@ -3,6 +3,7 @@ from django.views import View
 
 
 class AnonymousRequiredMixin(View):
+    """ Проверка на то, что юзер не авторизован """
     redirect_url = 'home'
 
     def dispatch(self, request, *args, **kwargs):
@@ -12,6 +13,7 @@ class AnonymousRequiredMixin(View):
 
 
 class AuthenticatedRequiredMixin(View):
+    """ Проверка на то, что юзер авторизован """
     redirect_url = 'home'
 
     def dispatch(self, request, *args, **kwargs):
@@ -21,6 +23,7 @@ class AuthenticatedRequiredMixin(View):
 
 
 class SuperuserRequiredMixin(View):
+    """ Проверка на суперадмина """
     redirect_url = 'home'
 
     def dispatch(self, request, *args, **kwargs):

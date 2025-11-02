@@ -7,6 +7,7 @@ from accounts.models import Profile
 
 @receiver(post_save, sender=Payment)
 def update_balance(sender, instance, created, **kwargs):
+    """ Сигнал пополнения баланса профиля при статусе платежа Завершен """
     if instance.status == Payment.Status.COMPLETED:
         try:
             profile = Profile.objects.get(user=instance.user)

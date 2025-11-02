@@ -7,6 +7,7 @@ from products.models import Product
 
 
 class PaymentMethod(models.Model):
+    """ Модель метода платежа """
     name = models.CharField(max_length=150)
     code = models.CharField(max_length=50, unique=True)
 
@@ -19,6 +20,7 @@ class PaymentMethod(models.Model):
 
 
 class Order(models.Model):
+    """ Модель заказа """
     class Status(models.TextChoices):
         PENDING = 'pending', 'Ожидает'
         PAID = 'paid', 'Оплачен'
@@ -54,6 +56,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    """ Модель элемента заказа """
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', verbose_name='Заказ')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
     quantity = models.IntegerField(default=0, validators=[MinValueValidator(1)], verbose_name='Количество')
@@ -72,6 +75,7 @@ class OrderItem(models.Model):
 
 
 class Payment(models.Model):
+    """ Модель платежа """
     class Status(models.TextChoices):
         PENDING = 'pending', 'Ожидает'
         COMPLETED = 'completed', 'Завершен'

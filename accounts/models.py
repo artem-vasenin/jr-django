@@ -9,6 +9,7 @@ def image_path(instance, filename):
 
 
 class Profile(models.Model):
+    """ Модель профиля пользователя с доп инфо """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     city = models.CharField(max_length=100, null=True, blank=True, verbose_name='Город')
     address = models.CharField(max_length=300, null=True, blank=True, verbose_name='Адрес доставки')

@@ -12,6 +12,7 @@ from .models import Product, Category
 
 
 class HomeView(View):
+    """ Контроллер домашней страницы-каталога """
     def get(self, request: HttpRequest) -> HttpResponse:
         categories = Category.objects.all()
         products = Product.objects.filter(is_active=True).order_by('-created_at')
@@ -62,11 +63,13 @@ class HomeView(View):
 
 
 class GuidesView(View):
+    """ Контроллер заглушки (не знаю зачем она) """
     def get(self, request: HttpRequest) -> HttpResponse:
         return render(request, 'products/guides.html')
 
 
 class DetailsView(View):
+    """ Контроллер детальной инфо товара """
     def get(self, request: HttpRequest, slug: str) -> HttpResponse:
         obj = get_object_or_404(Product, slug=slug)
         cart = Cart(request)
@@ -92,6 +95,7 @@ class DetailsView(View):
 
 
 class AddReviewView(View):
+    """ Контроллер добавления оценки и коммента к товару """
     def post(self, request: HttpRequest) -> HttpResponse:
         next_url = request.GET.get('next') or '/'
         form = ReviewForm(request.POST)

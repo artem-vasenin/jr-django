@@ -10,11 +10,13 @@ from accounts.mixins import SuperuserRequiredMixin
 
 
 class ManagementView(SuperuserRequiredMixin, View):
+    """ Контроллер дашборда кастомной админки """
     def get(self, request: HttpRequest) -> HttpResponse:
         return render(request, 'management/index.html')
 
 
 class ManagementProductsView(SuperuserRequiredMixin, View):
+    """ Контроллер списка товаров каст.адм """
     def get(self, request: HttpRequest) -> HttpResponse:
         lst = Product.objects.all().order_by('-id')
         paginator = Paginator(lst, 10)
@@ -25,6 +27,7 @@ class ManagementProductsView(SuperuserRequiredMixin, View):
 
 
 class ManagementProductView(SuperuserRequiredMixin, View):
+    """ Контроллер формы изменения товара каст.адм """
     template_name = 'management/product.html'
 
     def get(self, request: HttpRequest, slug: str) -> HttpResponse:
@@ -74,6 +77,7 @@ class ManagementProductView(SuperuserRequiredMixin, View):
 
 
 class ManagementAddProductView(SuperuserRequiredMixin, View):
+    """ Контроллер формы добавления товара каст.адм """
     template_name = 'management/add-product.html'
 
     def get(self, request: HttpRequest) -> HttpResponse:
@@ -93,6 +97,7 @@ class ManagementAddProductView(SuperuserRequiredMixin, View):
 
 
 class ManagementCategoriesView(SuperuserRequiredMixin, View):
+    """ Контроллер списка категорий каст.адм """
     def get(self, request: HttpRequest) -> HttpResponse:
         categories_list = Category.objects.all().order_by('id')
         paginator = Paginator(categories_list, 10)
@@ -103,6 +108,7 @@ class ManagementCategoriesView(SuperuserRequiredMixin, View):
 
 
 class ManagementCategoryView(SuperuserRequiredMixin, View):
+    """ Контроллер формы изменения категории каст.адм """
     template_name = 'management/category.html'
 
     def get(self, request: HttpRequest, slug) -> HttpResponse:
@@ -133,6 +139,7 @@ class ManagementCategoryView(SuperuserRequiredMixin, View):
 
 
 class ManagementAddCategoryView(SuperuserRequiredMixin, View):
+    """ Контроллер формы добавления категории каст.адм """
     template_name = 'management/add-category.html'
 
     def get(self, request: HttpRequest) -> HttpResponse:
@@ -151,6 +158,7 @@ class ManagementAddCategoryView(SuperuserRequiredMixin, View):
 
 
 class ManagementDeleteCategoryView(SuperuserRequiredMixin, View):
+    """ Контроллер формы удаления категории каст.адм """
     def post(self, request: HttpRequest, pk:int) -> HttpResponse:
         category = Category.objects.filter(pk=pk).first()
         if category:

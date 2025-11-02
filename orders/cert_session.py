@@ -7,6 +7,7 @@ from products.models import Product
 
 
 class Cart:
+    """ Класс сессионной корзины товаров """
     def __init__(self, request: HttpRequest):
         self.session = request.session
         cart = self.session.get(settings.CART_SESSION_ID)

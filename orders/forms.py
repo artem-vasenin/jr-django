@@ -5,13 +5,16 @@ from .models import PaymentMethod
 
 
 class ChoiceField(forms.ModelChoiceField):
+    """ Кастомное поле выбора метода платежа """
     def label_from_instance(self, obj):
         return obj.name
 
     def prepare_value(self, value):
         return getattr(value, 'pk', value)
 
+
 class OrderForm(forms.Form):
+    """ Форма создания заказа пользователем """
     phone = forms.CharField(
         max_length=11,
         required=True,

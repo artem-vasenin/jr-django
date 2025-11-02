@@ -6,6 +6,7 @@ from orders.models import PaymentMethod
 
 
 class UserLoginForm(forms.Form):
+    """ Форма входа пользователя """
     email = forms.EmailField(
         required=True,
         label='Email',
@@ -19,6 +20,7 @@ class UserLoginForm(forms.Form):
 
 
 class RegisterForm(forms.Form):
+    """ Форма регистрации пользователя """
     username = forms.CharField(
         required=True,
         label='Login',
@@ -42,6 +44,7 @@ class RegisterForm(forms.Form):
 
 
 class AccountForm(forms.Form):
+    """ Форма изменения профиля пользователя """
     first_name = forms.CharField(
         required=True,
         label='First name',
@@ -99,6 +102,7 @@ class AccountForm(forms.Form):
 
 
 class BalanceForm(forms.Form):
+    """ Форма пополнения баланса пользователем """
     amount = forms.DecimalField(
         max_digits=9,
         decimal_places=2,

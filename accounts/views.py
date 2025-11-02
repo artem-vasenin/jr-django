@@ -14,6 +14,7 @@ from orders.models import Order, PaymentMethod, Payment
 
 
 class UserLoginView(AnonymousRequiredMixin, View):
+    """ Контроллер аутентификации пользователя """
     template_name = 'accounts/login-form.html'
 
     def get(self, request: HttpRequest) -> HttpResponse:
@@ -45,6 +46,7 @@ class UserLoginView(AnonymousRequiredMixin, View):
 
 
 class RegisterView(AnonymousRequiredMixin, View):
+    """ Контроллер регистрации пользователем """
     template_name = 'accounts/register-form.html'
 
     def get(self, request: HttpRequest) -> HttpResponse:
@@ -77,12 +79,14 @@ class RegisterView(AnonymousRequiredMixin, View):
 
 
 class UserLogoutView(View):
+    """ Контроллер выхода пользователя """
     def get(self, request: HttpRequest) -> HttpResponse:
         logout(request)
         return redirect('accounts:login')
 
 
 class AccountBalanceView(View):
+    """ Контроллер пополнения баланса пользователя """
     template_name = 'accounts/balance.html'
 
     def get(self, request):
@@ -120,6 +124,7 @@ class AccountBalanceView(View):
 
 
 class AccountView(AuthenticatedRequiredMixin, View):
+    """ Контроллер изменения данных профиля пользователя """
     template_name = 'accounts/account.html'
 
     def get(self, request: HttpRequest) -> HttpResponse:

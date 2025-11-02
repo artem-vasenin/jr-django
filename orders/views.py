@@ -14,6 +14,7 @@ from accounts.mixins import AuthenticatedRequiredMixin
 
 
 class CartView(View):
+    """ Контроллер корзины товаров """
     def get(self, request: HttpRequest) -> HttpResponse:
         cart = Cart(request)
         return render(request, 'orders/cart.html', {'cart': cart})
@@ -41,6 +42,7 @@ class CartView(View):
 
 
 class CheckoutView(AuthenticatedRequiredMixin, View):
+    """ Контроллер создания заказа из корзины """
     template_name = 'orders/checkout.html'
 
     def get(self, request: HttpRequest) -> HttpResponse:

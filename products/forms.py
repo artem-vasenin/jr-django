@@ -4,6 +4,7 @@ from .models import Review
 
 
 class ReviewForm(forms.ModelForm):
+    """ Форма создания отзыва и оценки товара """
     rating = forms.ChoiceField(
         choices=[(i, '★') for i in range(1, 6)],
         widget=forms.RadioSelect(attrs={'required': True})

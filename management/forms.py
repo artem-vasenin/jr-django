@@ -3,6 +3,7 @@ from products.models import Category, Product
 
 
 class CategoryForm(forms.ModelForm):
+    """ Форма добавления/изменения категории товара менеджером """
     name = forms.CharField(
         max_length=100,
         required=True,
@@ -22,6 +23,7 @@ class CategoryForm(forms.ModelForm):
 
 
 class ProductForm(forms.ModelForm):
+    """ Форма добавления/изменения товара менеджером """
     name = forms.CharField(
         max_length=100,
         required=True,

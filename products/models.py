@@ -8,9 +8,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 def product_image_path(instance, filename):
+    """ Функция создания пути для картинок товаров """
     return os.path.join('products', instance.slug or 'temp', filename)
 
 class Category(models.Model):
+    """ Модель категории товаров """
     name = models.CharField(max_length=100, unique=True, verbose_name='Название')
     slug = models.SlugField(max_length=100, unique=True, blank=True, verbose_name='Slug')
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children', verbose_name='Родитель')
@@ -36,6 +38,7 @@ class Category(models.Model):
         return self.name
 
 class Product(models.Model):
+    """ Модель товара """
     name = models.CharField(max_length=100, unique=True, verbose_name='Название')
     slug = models.SlugField(max_length=100, unique=True, blank=True, verbose_name='Slug')
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
@@ -62,6 +65,7 @@ class Product(models.Model):
 
 
 class Review(models.Model):
+    """ Модель комментария и оценки товара """
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews', verbose_name='Товар')
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)], verbose_name='Рейтинг')
@@ -77,6 +81,7 @@ class Review(models.Model):
 
 
 def pre_save_product_slug(sender, instance, **kwargs):
+    """ сигнал добавления слага из названия товара """
     if not instance.slug:
         instance.slug = slugify(instance.name)
 
