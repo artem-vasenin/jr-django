@@ -190,6 +190,17 @@ header {
     border-color: var(--dark-green);
 }
 
+.button--danger {
+    background-color: var(--error-fg);
+    border: 1px solid var(--error-fg);
+    color: var(--white-text);
+}
+
+.button--danger:hover {
+    background-color: var(--message-error-bg);
+    border-color: var(--message-error-bg);
+}
+
 /* Hero Banner */
 .hero-banner {
     position: relative;
@@ -1666,15 +1677,21 @@ footer {
 
 .order-table-header {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr; /* 3-column layout */
+    grid-template-columns: 2fr 1fr 1fr 1fr; /* 4-column layout */
     background-color: var(--background-green);
     font-weight: 700;
 }
 
 .order-table-row {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
     border-top: 1px solid var(--border-default);
+}
+
+.order-table-row.canceled {
+    .order-status, .order-total {
+        color: #dc3545;
+    }
 }
 
 .order-table-cell {

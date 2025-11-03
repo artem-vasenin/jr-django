@@ -147,6 +147,19 @@ class AccountOrdersView(AuthenticatedRequiredMixin, View):
 
         return render(request, self.template_name, ctx)
 
+    def post(self, request: HttpRequest) -> HttpResponse:
+        order_id = int(request.POST.get('id'))
+
+        if order_id:
+            order = Order.objects.filter(pk=order_id).first()
+            if order:
+                order.status = Order.Status.CANCELED
+                order.save(update_fields=['status'])
+                request.user.profile.balance += order.total_price
+                request.user.profile.save(update_fields=['balance'])
+
+        return redirect('accounts:orders')
+
 
 class AccountProfileView(AuthenticatedRequiredMixin, View):
     """ Контроллер изменения данных профиля пользователя """
