@@ -68,7 +68,7 @@ class OrderItem(models.Model):
 
     @property
     def total_price(self):
-        return self.quantity * self.price
+        return (self.quantity or 0) * (self.price or 0)
 
     def __str__(self):
         return f'Продукт: {self.product.name} ({self.quantity} {self.product.unit}) - ${self.total_price}'
