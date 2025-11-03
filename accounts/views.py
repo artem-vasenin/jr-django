@@ -116,7 +116,7 @@ class AccountBalanceView(View):
                 )
 
                 messages.success(request, f'Payment #{transaction_id} created')
-                return redirect('accounts:account')
+                return redirect('accounts:profile')
             except Exception as e:
                 print('Error', e)
                 messages.error(request, 'Payment was not finished')

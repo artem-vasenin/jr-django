@@ -1,8 +1,11 @@
 import time
 from decimal import Decimal
 from django.views import View
+from django.conf import settings
 from django.db import transaction
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -102,13 +105,32 @@ class CheckoutView(AuthenticatedRequiredMixin, View):
                             order.status = Order.Status.PAID
                             order.save(update_fields=['status'])
 
+                    superuser = User.objects.filter(is_superuser=True).first()
+                    if superuser and superuser.email:
+                        send_mail(
+                            subject=f'New order {order.order_id}',
+                            message=f'Added new order from {request.user.username}',
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[superuser.email],
+                        )
+
+                    if request.user.email:
+                        send_mail(
+                            subject='Your order is successful',
+                            message=f'thank you for order №{order.order_id}!',
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[request.user.email],
+                        )
+
                     cart.clear()
                     messages.success(request, f'Order {order.order_id} created')
                     return redirect('home')
 
             except Exception as e:
-                print('Error', e)
-                messages.error(request, 'Order is not create')
+                import traceback
+                traceback.print_exc()
+                messages.error(request, f'Order not created: {e}')
+                # messages.error(request, 'Order is not create')
 
         ctx = {'form': form, 'cart': cart}
         return render(request, self.template_name, ctx)
