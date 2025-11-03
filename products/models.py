@@ -70,6 +70,7 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)], verbose_name='Рейтинг')
     comment = models.TextField(max_length=999, verbose_name='Комментарий')
+    is_active = models.BooleanField(default=True, blank=True, verbose_name='Активен')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     class Meta:

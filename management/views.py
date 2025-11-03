@@ -1,11 +1,12 @@
 from django.views import View
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest
 
 from .forms import CategoryForm, ProductForm
-from products.models import Category, Product
+from products.models import Category, Product, Review
 from accounts.mixins import SuperuserRequiredMixin
 
 
@@ -166,3 +167,51 @@ class ManagementDeleteCategoryView(SuperuserRequiredMixin, View):
             messages.success(request, 'Category deleted successfully')
 
         return redirect('management:management-categories')
+
+
+class ManagementUsersView(SuperuserRequiredMixin, View):
+    """ Контроллер списка пользователей каст.адм """
+    template_name = 'management/users.html'
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        lst = User.objects.all().order_by('id')
+        paginator = Paginator(lst, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, self.template_name, {'page_obj': page_obj})
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        user_id = request.POST.get('id')
+
+        if user_id:
+            user = User.objects.filter(pk=user_id).first()
+            if user:
+                user.is_active = not user.is_active
+                user.save(update_fields=['is_active'])
+
+        return redirect('management:management-users')
+
+
+class ManagementReviewsView(SuperuserRequiredMixin, View):
+    """ Контроллер списка отзывов каст.адм """
+    template_name = 'management/reviews.html'
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        lst = Review.objects.all().order_by('id')
+        paginator = Paginator(lst, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, self.template_name, {'page_obj': page_obj})
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        review_id = request.POST.get('id')
+
+        if review_id:
+            review = Review.objects.filter(pk=review_id).first()
+            if review:
+                review.is_active = not review.is_active
+                review.save(update_fields=['is_active'])
+
+        return redirect('management:management-reviews')

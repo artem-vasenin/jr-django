@@ -1,43 +1,34 @@
 {% extends 'base/index.html' %}
 
-{% block title %}Admin - Product Stock{% endblock %}
+{% block title %}Admin - Categories{% endblock %}
 
 {% block body %}
     <main class="admin-page-wrapper">
   <div class="admin-container">
     <!-- Tabs Navigation -->
         <div class="admin-tabs">
-            <a href="{% url 'management:management-products' %}" class="admin-tab active">Products</a>
+            <a href="{% url 'management:management-products' %}" class="admin-tab">Products</a>
             <a href="{% url 'management:management-categories' %}" class="admin-tab">Categories</a>
-            <a href="{% url 'management:management-users' %}" class="admin-tab">Users</a>
+            <a href="{% url 'management:management-users' %}" class="admin-tab active">Users</a>
             <a href="{% url 'management:management-reviews' %}" class="admin-tab">Reviews</a>
             <a href="{% url 'management:management' %}" class="admin-tab">Dashboard</a>
         </div>
 
     <!-- Content Area -->
     <div class="admin-content">
-      <h1 class="admin-content__title">Admin - Product Stock</h1>
-      <div class="admin-actions">
-        <a href="{% url 'management:management-add-product' %}" class="button button--primary">
-          <i class="fa-solid fa-plus"></i>
-          <span>Add Product</span>
-        </a>
-      </div>
-
+      <h1 class="admin-content__title">Admin - Users</h1>
       <div class="admin-table-wrapper">
-      {% if page_obj %}
+        {% if page_obj %}
         <table class="admin-table">
           <thead>
           <tr>
             <th>id</th>
-            <th>image</th>
-            <th>name</th>
-            <th>description</th>
-            <th>price</th>
-            <th>category</th>
-            <th>stock</th>
-            <th>active</th>
-            <th>created_at</th>
+            <th>username</th>
+            <th>email</th>
+            <th>first name</th>
+            <th>last name</th>
+            <th>joined</th>
+            <th>is_active</th>
             <th></th>
           </tr>
           </thead>
@@ -45,26 +36,33 @@
           {% for c in page_obj %}
           <tr>
             <td>{{ c.pk }}</td>
-            <td><img src="{{ c.image.url }}" alt="img" width="50" /></td>
-            <td>{{ c.name }}</td>
-            <td>{{ c.description|truncatewords:5 }}</td>
-            <td>${{ c.price }}</td>
-            <td>{{ c.category.name }}</td>
-            <td>{{ c.stock }}</td>
+            <td>{{ c.username }}</td>
+            <td>{{ c.email }}</td>
+            <td>{{ c.first_name }}</td>
+            <td>{{ c.last_name }}</td>
+            <td>{{ c.date_joined }}</td>
             <td>{{ c.is_active }}</td>
-            <td>{{ c.created_at|date:"d.m.Y H:i" }}</td>
-            <td><a href="{% url 'management:management-product' c.slug %}" class="button button--edit">Edit</a></td>
+            <td>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ c.pk }}">
+                    <button
+                        type="submit"
+                        class="button {% if c.is_active %}button--danger{% else %}button--primary{% endif %}"
+                    >{% if c.is_active %}Block{% else %}Unblock{% endif %}</button>
+                </form>
+            </td>
           </tr>
           {% endfor %}
           </tbody>
         </table>
-      {% else %}
-        <div class="empty_list">List of products is empty</div>
-      {% endif %}
+        {% else %}
+            <div class="empty_list">List categories is empty</div>
+        {% endif %}
       </div>
 
       <!-- Pagination -->
-      {% if page_obj.has_previous or page_obj.has_next %}
+    {% if page_obj.has_previous or page_obj.has_next %}
       <div class="account-pagination">
         <a
             href="?page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% endif %}"
