@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth import authenticate, login, logout
+from rest_framework.templatetags.rest_framework import items
 
 from .mixins import AnonymousRequiredMixin, AuthenticatedRequiredMixin
 from .forms import UserLoginForm, RegisterForm, AccountForm, BalanceForm, ChangePasswordForm
@@ -157,6 +158,11 @@ class AccountOrdersView(AuthenticatedRequiredMixin, View):
                 order.save(update_fields=['status'])
                 request.user.profile.balance += order.total_price
                 request.user.profile.save(update_fields=['balance'])
+                items = order.items.all()
+                for i in items:
+                    product = i.product
+                    product.stock += i.quantity
+                    product.save(update_fields=['stock'])
 
         return redirect('accounts:orders')
 

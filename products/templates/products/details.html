@@ -29,11 +29,12 @@
               </div>
             <p class="product-price">${{ object.price }}</p>
           </div>
+            <div class="count">In stock: <b>{{ object.stock }}</b></div>
         </div>
         <div class="product-description">
             {{ object.description|linebreaks }}
         </div>
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and object.stock > 0 %}
         <div class="cart-controls">
             <form action="{% url 'orders:cart' %}" method="post">
                 {% csrf_token %}

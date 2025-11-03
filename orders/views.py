@@ -25,7 +25,8 @@ class CartView(View):
         next_page = request.POST.get('next_page')
         product = get_object_or_404(Product, id=product_id)
         if request.POST.get('action') == 'inc':
-            cart.change(product)
+            if product.stock >= cart.in_cart(product) + 1:
+                cart.change(product)
         if request.POST.get('action') == 'dec':
             cart.change(product, True)
         if request.POST.get('action') == 'del':
@@ -81,12 +82,16 @@ class CheckoutView(AuthenticatedRequiredMixin, View):
                     )
 
                     for p in cart.items():
-                        OrderItem.objects.create(
-                            order_id=order.pk,
-                            product=p['product'],
-                            quantity=p['qty'],
-                            price=p['price'],
-                        )
+                        product = Product.objects.filter(pk=p['product'].pk).first()
+                        if product:
+                            OrderItem.objects.create(
+                                order_id=order.pk,
+                                product=product,
+                                quantity=p['qty'],
+                                price=p['price'],
+                            )
+                            product.stock -= p['qty']
+                            product.save(update_fields=['stock'])
 
                     profile = getattr(request.user, 'profile', None)
                     if profile:

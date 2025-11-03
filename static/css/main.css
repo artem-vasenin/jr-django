@@ -966,7 +966,7 @@ footer {
     align-self: flex-start;
 }
 
-.price-category {
+.price-category, .count {
     font-size: 20px;
     font-weight: 500;
     line-height: 1.2;
