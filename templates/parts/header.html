@@ -16,7 +16,7 @@
     </nav>
     {% if user.is_authenticated %}
     <div class="header__user-actions">
-      <a href="{% url 'accounts:account' %}" class="user-icon" aria-label="My Account">
+      <a href="{% url 'accounts:profile' %}" class="user-icon" aria-label="My Account">
         {% if user.profile.image %}
             <img class="avatar img" src="{{ user.profile.image.url }}" alt="img"/>
         {% else %}

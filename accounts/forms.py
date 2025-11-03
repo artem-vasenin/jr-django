@@ -123,3 +123,17 @@ class BalanceForm(forms.Form):
         empty_label=None,
         label='Payment Method',
     )
+
+
+class ChangePasswordForm(forms.Form):
+    """ Форма смены пароля """
+    password1 = forms.CharField(
+        required=True,
+        label="Old Password",
+        widget=forms.PasswordInput(attrs={'class': 'Input', 'placeholder': '******', 'id': 'password1'})
+    )
+    password2 = forms.CharField(
+        required=True,
+        label="New Password",
+        widget=forms.PasswordInput(attrs={'class': 'Input', 'placeholder': '******', 'id': 'password2'})
+    )

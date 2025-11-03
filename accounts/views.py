@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpRequest
 from django.contrib.auth import authenticate, login, logout
 
 from .mixins import AnonymousRequiredMixin, AuthenticatedRequiredMixin
-from .forms import UserLoginForm, RegisterForm, AccountForm, BalanceForm
+from .forms import UserLoginForm, RegisterForm, AccountForm, BalanceForm, ChangePasswordForm
 from orders.models import Order, PaymentMethod, Payment
 
 
@@ -123,18 +123,37 @@ class AccountBalanceView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class AccountView(AuthenticatedRequiredMixin, View):
-    """ Контроллер изменения данных профиля пользователя """
-    template_name = 'accounts/account.html'
+class AccountOrdersView(AuthenticatedRequiredMixin, View):
+    """ Контроллер списка заказов пользователя """
+    template_name = 'accounts/account-orders.html'
 
     def get(self, request: HttpRequest) -> HttpResponse:
         user = request.user
         page_number = request.GET.get('page', 1)
-        per_page = 3
+        per_page = 10
         orders = Order.objects.filter(user_id=user.pk).order_by('-created_at')
         paginator = Paginator(orders, per_page)
         page_obj = paginator.get_page(page_number)
 
+        ctx = {
+            'orders': page_obj,
+            'has_next': page_obj.has_next(),
+            'has_previous': page_obj.has_previous(),
+            'next_page': f'?page={page_obj.next_page_number()}' if page_obj.has_next() else None,
+            'previous_page': f'?page={page_obj.previous_page_number()}' if page_obj.has_previous() else None,
+            'current_page': page_obj.number,
+            'total_pages': paginator.num_pages,
+        }
+
+        return render(request, self.template_name, ctx)
+
+
+class AccountProfileView(AuthenticatedRequiredMixin, View):
+    """ Контроллер изменения данных профиля пользователя """
+    template_name = 'accounts/account-profile.html'
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        user = request.user
         profile = getattr(user, 'profile', None)
         initial = {
             'first_name': getattr(user, 'first_name', ''),
@@ -147,39 +166,29 @@ class AccountView(AuthenticatedRequiredMixin, View):
             initial['address'] = getattr(profile, 'address', '')
 
         form = AccountForm(initial=initial)
-
-        ctx = {
-            'form': form,
-            'orders': page_obj,
-            'has_next': page_obj.has_next(),
-            'has_previous': page_obj.has_previous(),
-            'next_page': f'?page={page_obj.next_page_number()}' if page_obj.has_next() else None,
-            'previous_page': f'?page={page_obj.previous_page_number()}' if page_obj.has_previous() else None,
-            'current_page': page_obj.number,
-            'total_pages': paginator.num_pages,
-        }
+        ctx = {'form': form}
 
         return render(request, self.template_name, ctx)
 
     def post(self, request: HttpRequest) -> HttpResponse:
-        form = AccountForm(request.POST, request.FILES)
+        form_profile = AccountForm(request.POST, request.FILES)
 
-        if form.is_valid():
-            first_name = form.cleaned_data.get('first_name')
-            last_name = form.cleaned_data.get('last_name')
-            email = form.cleaned_data.get('email')
-            phone = form.cleaned_data.get('phone')
-            city = form.cleaned_data.get('city')
-            address = form.cleaned_data.get('address')
-            image = form.cleaned_data.get('image')
+        if form_profile.is_valid():
+            first_name = form_profile.cleaned_data.get('first_name')
+            last_name = form_profile.cleaned_data.get('last_name')
+            email = form_profile.cleaned_data.get('email')
+            phone = form_profile.cleaned_data.get('phone')
+            city = form_profile.cleaned_data.get('city')
+            address = form_profile.cleaned_data.get('address')
+            image = form_profile.cleaned_data.get('image')
 
             if User.objects.filter(Q(email=email) & ~Q(pk=request.user.pk)).exists():
-                form.add_error(None, 'Такой email уже занят')
-                return render(request, self.template_name, {'form': form})
+                form_profile.add_error(None, 'There is already such an email')
+                return render(request, self.template_name, {'form': form_profile})
 
             if User.objects.filter(Q(profile__phone=phone) & ~Q(pk=request.user.pk)).exists():
-                form.add_error(None, 'Такой телефон уже занят')
-                return render(request, self.template_name, {'form': form})
+                form_profile.add_error(None, 'Such a phone is already occupied')
+                return render(request, self.template_name, {'form': form_profile})
 
             user = request.user
             user.first_name = first_name
@@ -193,8 +202,37 @@ class AccountView(AuthenticatedRequiredMixin, View):
                 user.profile.image = image
 
             user.save()
-            messages.success(request, 'Category changed successfully')
+            messages.success(request, 'Account changed successfully')
 
-            return redirect('accounts:account')
+            return redirect('accounts:profile')
 
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form_profile})
+
+
+class AccountSecurityView(AuthenticatedRequiredMixin, View):
+    """ Контроллер изменения пароля пользователя """
+    template_name = 'accounts/account-security.html'
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        form_password = ChangePasswordForm()
+        ctx = {'form': form_password}
+
+        return render(request, self.template_name, ctx)
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        form_password = ChangePasswordForm(request.POST)
+
+        if form_password.is_valid():
+            password1 = form_password.cleaned_data.get('password1')
+            password2 = form_password.cleaned_data.get('password2')
+
+            if request.user.check_password(password1):
+                request.user.set_password(password2)
+                request.user.save()
+                messages.success(request, 'Password changed successfully')
+
+                return redirect('accounts:login')
+            else:
+                messages.error(request, 'Password is not correct')
+
+        return render(request, self.template_name, {'form': form_password})

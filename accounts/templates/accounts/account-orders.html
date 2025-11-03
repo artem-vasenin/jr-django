@@ -21,8 +21,10 @@
     </div>
     <!-- Tabs Navigation -->
     <div class="account-tabs">
-        <button class="account-tab active" data-tab-target="#order-history">Order History</button>
-        <button class="account-tab" data-tab-target="#account-info">Account Information</button>
+        <span class="account-tab active">Order History</span>
+        <a href="{% url 'accounts:profile' %}" class="account-tab">Account Information</a>
+        <a href="{% url 'accounts:security' %}" class="account-tab">Change password</a>
+
         {% if user.is_superuser %}
             <a href="{% url 'management:management' %}" class="admin-btn">Admin panel</a>
         {% endif %}
@@ -74,61 +76,6 @@
         {% else %}
             <p>Orders list is empty</p>
         {% endif %}
-      </div>
-
-      <!-- Account Information Panel -->
-      <div id="account-info" class="tab-pane">
-        <div class="account-form-container">
-          <h2 class="account-form-title">Personal Info</h2>
-          <form id="account-info-form" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% for error in form.non_field_errors %}
-              <div class="error">{{ error }}</div>
-            {% endfor %}
-
-            <div class="checkout-form-group">
-              <label for="first_name">{{ form.first_name.label }}</label>
-              {{ form.first_name }}
-            </div>
-            <div class="checkout-form-group">
-              <label for="last_name">{{ form.last_name.label }}</label>
-              {{ form.last_name }}
-            </div>
-            <div class="checkout-form-group">
-              <label for="phone">{{ form.phone.label }}</label>
-              {{ form.phone }}
-                {% for error in form.phone.errors %}
-                <div class="error">{{ error }}</div>
-                {% endfor %}
-            </div>
-            <div class="checkout-form-group">
-              <label for="email">{{ form.email.label }}</label>
-              {{ form.email }}
-            </div>
-            <div class="checkout-form-group">
-              <label for="coty">City</label>
-              {{ form.city }}
-            </div>
-            <div class="checkout-form-group image-group">
-                <div class="image-field">
-                  <label for="image">{{ form.image.label }}</label>
-                  {{ form.image }}
-                </div>
-                {% if user.profile.image %}
-                <div class="image-preview">
-                    <img src="{{ user.profile.image.url }}" alt="img"/>
-                </div>
-                {% endif %}
-            </div>
-            <div class="checkout-form-group">
-              <label for="address">Shipping address</label>
-              {{ form.address }}
-            </div>
-
-            <button type="submit" class="button button--primary button--full-width">Save</button>
-            <a href="{% url 'accounts:logout' %}" class="button button--secondary button--full-width">Logout</a>
-          </form>
-        </div>
       </div>
     </div>
   </div>

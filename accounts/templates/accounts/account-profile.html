@@ -1,0 +1,95 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+{% block title %}Account{% endblock %}
+
+{% block body %}
+<main class="account-page-wrapper">
+
+  <div class="account-container">
+    <div class="balance">
+        <div class="balance__left">
+            <span class="balance__label">Balance:</span>
+            <span class="balance__value">${{ user.profile.balance }}</span>
+        </div>
+        <div class="balance__right">
+            <a
+                href="{% url 'accounts:balance' %}"
+                class="button button--primary"
+            >deposit into your account</a>
+        </div>
+    </div>
+    <!-- Tabs Navigation -->
+    <div class="account-tabs">
+        <a href="{% url 'accounts:orders' %}" class="account-tab">Order History</a>
+        <span class="account-tab active">Account Information</span>
+        <a href="{% url 'accounts:security' %}" class="account-tab">Change password</a>
+
+        {% if user.is_superuser %}
+            <a href="{% url 'management:management' %}" class="admin-btn">Admin panel</a>
+        {% endif %}
+    </div>
+
+    <!-- Tabs Content -->
+    <div class="tab-content">
+      <!-- Account Information Panel -->
+      <div id="account-info" class="tab-pane active">
+        <div class="account-form-container">
+          <h2 class="account-form-title">Personal Info</h2>
+          <form id="account-info-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for error in form.non_field_errors %}
+              <div class="error">{{ error }}</div>
+            {% endfor %}
+
+            <div class="checkout-form-group">
+              <label for="first_name">{{ form.first_name.label }}</label>
+              {{ form.first_name }}
+            </div>
+            <div class="checkout-form-group">
+              <label for="last_name">{{ form.last_name.label }}</label>
+              {{ form.last_name }}
+            </div>
+            <div class="checkout-form-group">
+              <label for="phone">{{ form.phone.label }}</label>
+              {{ form.phone }}
+                {% for error in form.phone.errors %}
+                <div class="error">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="checkout-form-group">
+              <label for="email">{{ form.email.label }}</label>
+              {{ form.email }}
+            </div>
+            <div class="checkout-form-group">
+              <label for="coty">{{ form.city.label }}</label>
+              {{ form.city }}
+            </div>
+            <div class="checkout-form-group image-group">
+                <div class="image-field">
+                  <label for="image">{{ form.image.label }}</label>
+                  {{ form.image }}
+                </div>
+                {% if user.profile.image %}
+                <div class="image-preview">
+                    <img src="{{ user.profile.image.url }}" alt="img"/>
+                </div>
+                {% endif %}
+            </div>
+            <div class="checkout-form-group">
+              <label for="address">{{ form.address.label }}</label>
+              {{ form.address }}
+            </div>
+
+            <button
+                type="submit"
+                class="button button--primary button--full-width"
+            >Save</button>
+            <a href="{% url 'accounts:logout' %}" class="button button--secondary button--full-width">Logout</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

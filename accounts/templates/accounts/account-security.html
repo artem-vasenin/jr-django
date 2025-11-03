@@ -1,0 +1,63 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+{% block title %}Account{% endblock %}
+
+{% block body %}
+<main class="account-page-wrapper">
+
+  <div class="account-container">
+    <div class="balance">
+        <div class="balance__left">
+            <span class="balance__label">Balance:</span>
+            <span class="balance__value">${{ user.profile.balance }}</span>
+        </div>
+        <div class="balance__right">
+            <a
+                href="{% url 'accounts:balance' %}"
+                class="button button--primary"
+            >deposit into your account</a>
+        </div>
+    </div>
+    <!-- Tabs Navigation -->
+    <div class="account-tabs">
+        <a href="{% url 'accounts:orders' %}" class="account-tab">Order History</a>
+        <a href="{% url 'accounts:profile' %}" class="account-tab">Account Information</a>
+        <span class="account-tab active">Change password</span>
+
+        {% if user.is_superuser %}
+            <a href="{% url 'management:management' %}" class="admin-btn">Admin panel</a>
+        {% endif %}
+    </div>
+
+    <!-- Tabs Content -->
+    <div class="tab-content">
+        <!-- Security block -->
+        <div id="account-security" class="tab-pane active">
+            <div class="account-form-container">
+                <h2 class="account-form-title">Personal Info</h2>
+                <form id="account-info-form" method="post">
+                    {% csrf_token %}
+                    {% for error in form.non_field_errors %}
+                      <div class="error">{{ error }}</div>
+                    {% endfor %}
+                    <div class="checkout-form-group">
+                      <label for="password1">{{ form.password1.label }}</label>
+                      {{ form.password1 }}
+                    </div>
+                    <div class="checkout-form-group">
+                      <label for="password2">{{ form.password2.label }}</label>
+                      {{ form.password2 }}
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="button button--primary button--full-width"
+                    >Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
+</main>
+{% endblock %}
