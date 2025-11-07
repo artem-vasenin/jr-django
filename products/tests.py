@@ -6,6 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from products.models import Product, Category, Review
 
+
 @pytest.mark.django_db
 def test_product_creation():
     """ Проверка создания товара """
