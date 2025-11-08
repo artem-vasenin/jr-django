@@ -37,7 +37,7 @@ class Query(graphene.ObjectType):
     @staticmethod
     def resolve_all_cats(root, info):
         """Получение всех категорий"""
-        return Category.objects.all()
+        return Category.objects.select_related('parent').prefetch_related('product')
 
     @staticmethod
     def resolve_cat_by_id(root, info, pk):
@@ -47,7 +47,7 @@ class Query(graphene.ObjectType):
     @staticmethod
     def resolve_all_products(root, info):
         """Получение всех товаров"""
-        return Product.objects.all()
+        return Product.objects.filter(is_active=True).select_related('category').prefetch_related('reviews')
 
     @staticmethod
     def resolve_product_by_id(root, info, pk):
@@ -57,7 +57,7 @@ class Query(graphene.ObjectType):
     @staticmethod
     def resolve_all_reviews(root, info):
         """Получение всех отзывов"""
-        return Review.objects.all()
+        return Review.objects.filter(is_active=True).select_related('product')
 
 
 class CreateCategory(graphene.Mutation):
