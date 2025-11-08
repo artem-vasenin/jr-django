@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'management',
     'accounts',
     'rest_framework',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -160,3 +161,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CART_SESSION_ID = 'cart'
+
+GRAPHENE = {
+    'SCHEMA': 'shop.schema.schema',
+}

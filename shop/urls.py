@@ -18,11 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from graphene_django.views import GraphQLView
 
 from products.views import HomeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("graphql/", GraphQLView.as_view(graphiql=True)),
     path('accounts/', include('accounts.urls')),
     path('management/', include('management.urls')),
     path('products/', include('products.urls')),
