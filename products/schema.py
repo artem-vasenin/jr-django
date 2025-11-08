@@ -42,7 +42,10 @@ class Query(graphene.ObjectType):
     @staticmethod
     def resolve_cat_by_id(root, info, pk):
         """Получение категории по PK"""
-        return Category.objects.filter(pk=pk).first()
+        try:
+            return Category.objects.get(pk=pk)
+        except Category.DoesNotExist:
+            return None
 
     @staticmethod
     def resolve_all_products(root, info):
@@ -52,7 +55,10 @@ class Query(graphene.ObjectType):
     @staticmethod
     def resolve_product_by_id(root, info, pk):
         """Получение товара по PK"""
-        return Product.objects.filter(pk=pk).first()
+        try:
+            return Product.objects.get(pk=pk)
+        except Product.DoesNotExist:
+            return None
 
     @staticmethod
     def resolve_all_reviews(root, info):
