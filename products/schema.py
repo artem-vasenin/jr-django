@@ -37,7 +37,7 @@ class Query(graphene.ObjectType):
     @staticmethod
     def resolve_all_cats(root, info):
         """Получение всех категорий"""
-        return Category.objects.select_related('parent').prefetch_related('product')
+        return Category.objects.select_related('parent').prefetch_related('product_set')
 
     @staticmethod
     def resolve_cat_by_id(root, info, pk):
