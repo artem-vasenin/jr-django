@@ -7,7 +7,6 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth import authenticate, login, logout
-from rest_framework.templatetags.rest_framework import items
 
 from .mixins import AnonymousRequiredMixin, AuthenticatedRequiredMixin
 from .forms import UserLoginForm, RegisterForm, AccountForm, BalanceForm, ChangePasswordForm
