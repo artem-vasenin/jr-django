@@ -126,9 +126,6 @@ class UpdateProfile(graphene.Mutation):
         if phone:
             profile.phone = phone
         if image:
-            import base64
-            from django.core.files.base import ContentFile
-
             if ';base64,' in image:
                 format, imgstr = image.split(';base64,')
                 ext = format.split('/')[-1]
