@@ -41,19 +41,21 @@ class CartType(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    all_orders = graphene.List(OrderType)
+    all_orders_by_user_id = graphene.List(OrderType, pk=graphene.Int(required=True))
     order_by_id = graphene.Field(OrderType, pk=graphene.Int(required=True))
     all_order_items = graphene.List(OrderItemType, pk=graphene.Int(required=True))
-    all_payments = graphene.List(PaymentType)
+    all_payments = graphene.List(PaymentType, pk=graphene.Int(required=True))
     payment_by_id = graphene.Field(PaymentType, pk=graphene.Int(required=True))
     cart = graphene.Field(CartType)
 
     @staticmethod
-    def resolve_all_orders(root, info):
-        """Получение всех заказов"""
-        return Order.objects.prefetch_related('items')
+    @login_required
+    def resolve_all_orders_by_user_id(root, info, pk):
+        """Получение всех заказов пользователя"""
+        return Order.objects.filter(user_id=pk).prefetch_related('items')
 
     @staticmethod
+    @login_required
     def resolve_order_by_id(root, info, pk):
         """Получение заказа по ID"""
         try:
@@ -62,16 +64,19 @@ class Query(graphene.ObjectType):
             return None
 
     @staticmethod
+    @login_required
     def resolve_all_order_items(root, info, pk):
         """Получение элементов заказа по его ID"""
         return OrderItem.objects.filter(order_id=pk)
 
     @staticmethod
-    def resolve_all_payments(root, info):
-        """Получение всех платежей"""
-        return Payment.objects.all()
+    @login_required
+    def resolve_all_payments(root, info, pk):
+        """Получение всех платежей пользователя"""
+        return Payment.objects.filter(user_id=pk)
 
     @staticmethod
+    @login_required
     def resolve_payment_by_id(root, info, pk):
         """Получение платежа по ID"""
         try:
@@ -80,6 +85,7 @@ class Query(graphene.ObjectType):
             return None
 
     @staticmethod
+    @login_required
     def resolve_cart(root, info):
         """Получение корзины"""
         request = info.context

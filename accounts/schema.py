@@ -29,11 +29,13 @@ class Query(graphene.ObjectType):
     profile_by_user_id = graphene.Field(ProfileType, pk=graphene.Int(required=True))
 
     @staticmethod
+    @login_required
     def resolve_all_users(root, info):
         """Получение всех пользователей"""
         return User.objects.prefetch_related('profile')
 
     @staticmethod
+    @login_required
     def resolve_user_by_id(root, info, pk):
         """Получение пользователя по PK"""
         try:
@@ -42,6 +44,7 @@ class Query(graphene.ObjectType):
             return None
 
     @staticmethod
+    @login_required
     def resolve_profile_by_user_id(root, info, pk):
         """Получение профиля по PK"""
         profile = Profile.objects.filter(user_id=pk).first()
