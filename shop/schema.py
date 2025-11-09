@@ -1,15 +1,20 @@
 import graphene
 
-import products.schema
+from products.schema import Mutation as ProductsMutation
+from products.schema import Query as ProductsQuery
+from accounts.schema import Mutation as AuthMutation
+from accounts.schema import Query as AuthQuery
 
 
 class Query(
-    products.schema.Query,
+    ProductsQuery,
+    AuthQuery,
 ):
     ...
 
 class Mutation(
-    products.schema.Mutation,
+    ProductsMutation,
+    AuthMutation,
 ):
     ...
 
