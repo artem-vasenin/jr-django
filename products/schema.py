@@ -2,6 +2,7 @@ import graphene
 import base64
 from django.core.files.base import ContentFile
 from graphene_django.types import DjangoObjectType
+from graphql_jwt.decorators import login_required, superuser_required
 
 from .models import Category, Product, Review
 
@@ -75,10 +76,8 @@ class CreateCategory(graphene.Mutation):
 
     result = graphene.Field(CategoryType)
 
+    @superuser_required
     def mutate(self, info, name, slug=None, parent_id=None):
-        user = info.context.user
-        if not user.is_authenticated and not user.is_superuser:
-            raise Exception("Access denied")
         obj = Category.objects.create(name=name, slug=slug, parent_id=parent_id)
         return CreateCategory(result=obj)
 
@@ -93,11 +92,8 @@ class UpdateCategory(graphene.Mutation):
 
     result = graphene.Field(CategoryType)
 
+    @superuser_required
     def mutate(self, info, pk, name=None, slug=None, parent_id=None):
-        user = info.context.user
-        if not user.is_authenticated and not user.is_superuser:
-            raise Exception("Access denied")
-
         try:
             obj = Category.objects.get(pk=pk)
             obj.name = name if name else obj.name
@@ -116,10 +112,8 @@ class DeleteCategory(graphene.Mutation):
 
     ok = graphene.Boolean()
 
+    @superuser_required
     def mutate(self, info, pk):
-        if not info.context.user.is_authenticated and not info.context.user.is_superuser:
-            raise Exception("Access denied")
-
         try:
             obj = Category.objects.get(pk=pk)
             obj.delete()
@@ -143,13 +137,11 @@ class CreateProduct(graphene.Mutation):
 
     result = graphene.Field(ProductType)
 
+    @superuser_required
     def mutate(
             self, info, name, unit, price, category_id, stock=None,
             slug=None, description=None, is_active=True, image=None
     ):
-        user = info.context.user
-        if not user.is_authenticated and not user.is_superuser:
-            raise Exception("Access denied")
         obj = Product.objects.create(
             name=name, slug=slug, unit=unit, price=price, category_id=category_id,
             stock=stock, description=description, is_active=is_active,
@@ -178,15 +170,11 @@ class UpdateProduct(graphene.Mutation):
 
     result = graphene.Field(ProductType)
 
+    @superuser_required
     def mutate(
             self, info, pk, name=None, unit=None, price=None, category_id=None, stock=None,
             slug=None, description=None, is_active=None, image=None
     ):
-        user = info.context.user
-
-        if not user.is_authenticated and not user.is_superuser:
-            raise Exception("Access denied")
-
         try:
             obj = Product.objects.get(pk=pk)
             obj.name = name if name else obj.name
@@ -216,10 +204,8 @@ class DeleteProduct(graphene.Mutation):
 
     ok = graphene.Boolean()
 
+    @superuser_required
     def mutate(self, info, pk):
-        if not info.context.user.is_authenticated and not info.context.user.is_superuser:
-            raise Exception("Access denied")
-
         try:
             obj = Product.objects.get(pk=pk)
             obj.delete()
@@ -239,10 +225,8 @@ class CreateReview(graphene.Mutation):
 
     result = graphene.Field(ReviewType)
 
+    @login_required
     def mutate(self, info, comment, user_id, product_id, rating, is_active=True):
-        user = info.context.user
-        if not user.is_authenticated:
-            raise Exception("Access denied")
         obj = Review.objects.create(
             comment=comment, user_id=user_id, product_id=product_id, rating=rating, is_active=is_active,
         )
@@ -257,11 +241,8 @@ class UpdateReview(graphene.Mutation):
 
     result = graphene.Field(ReviewType)
 
+    @superuser_required
     def mutate(self, info, pk, is_active):
-        user = info.context.user
-        if not user.is_authenticated and not user.is_superuser:
-            raise Exception("Access denied")
-
         try:
             obj = Review.objects.get(pk=pk)
             obj.is_active = is_active if is_active else obj.is_active

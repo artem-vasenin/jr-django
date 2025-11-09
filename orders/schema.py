@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from graphene_django.types import DjangoObjectType
+from graphql_jwt.decorators import login_required, superuser_required
 
 from .cert_session import Cart
 from products.models import Product
@@ -103,11 +104,9 @@ class CreatePayment(graphene.Mutation):
 
     result = graphene.Field(PaymentType)
 
+    @login_required
     def mutate(self, info, amount, method_id):
         user = info.context.user
-        if not user or not user.is_authenticated:
-            raise Exception("Access denied")
-
         try:
             transaction_id = f'{user.pk}_{int(time.time())}'
 
@@ -133,6 +132,7 @@ class ChangeCart(graphene.Mutation):
     ok = graphene.Boolean()
     cart = graphene.JSONString()
 
+    @login_required
     def mutate(self, info, product_id, action='inc'):
         request = info.context
         cart = Cart(request)
@@ -161,14 +161,12 @@ class CreateOrder(graphene.Mutation):
 
     result = graphene.Field(OrderType)
 
+    @login_required
     def mutate(self, info, phone, city, address, method_id):
         request = info.context
         user = request.user
-
-        if not user or not user.is_authenticated:
-            raise Exception('Access denied')
-
         cart = Cart(request)
+
         if not len(cart):
             raise Exception('Cart is empty')
 

@@ -4,6 +4,7 @@ import base64
 from django.core.files.base import ContentFile
 from graphene_django import DjangoObjectType
 from django.contrib.auth.models import User
+from graphql_jwt.decorators import login_required, superuser_required
 
 from .models import Profile
 
@@ -98,6 +99,7 @@ class UpdateProfile(graphene.Mutation):
 
     result = graphene.Field(UserType)
 
+    @login_required
     def mutate(
             self, info, username=None, email=None, first_name=None,
             last_name=None, city=None, address=None, phone=None, image=None,
@@ -105,8 +107,6 @@ class UpdateProfile(graphene.Mutation):
         user = info.context.user
         profile = user.profile
 
-        if not user or not user.is_authenticated:
-            raise Exception("Access denied")
         if username:
             if username != user.username and User.objects.filter(username=username).exists():
                 raise Exception('Username already exists')
@@ -148,10 +148,8 @@ class DeleteUser(graphene.Mutation):
 
     ok = graphene.Boolean()
 
+    @superuser_required
     def mutate(self, info, pk):
-        if not info.context.user.is_authenticated and not info.context.user.is_superuser:
-            raise Exception("Access denied")
-
         try:
             obj = User.objects.get(pk=pk)
             obj.delete()
