@@ -139,7 +139,7 @@ class CreateProduct(graphene.Mutation):
 
     @superuser_required
     def mutate(
-            self, info, name, unit, price, category_id, stock=None,
+            self, info, name, unit, price, category_id, stock=0,
             slug=None, description=None, is_active=True, image=None
     ):
         obj = Product.objects.create(
