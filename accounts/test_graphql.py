@@ -6,12 +6,14 @@ from django.contrib.auth.models import User
 
 @pytest.fixture
 def superuser(db):
+    """Добавляем фикстуру суперюзера"""
     user = User.objects.create_superuser(username="superuser", email="super@user.ru", password="12345")
     return user
 
 
 @pytest.fixture
 def user(db):
+    """Добавляем фикстуру обычного пользователя"""
     user = User.objects.create_user(username="testuser", password="12345")
     user.profile.city = 'Tver'
     user.profile.save(update_fields=['city'])
@@ -20,6 +22,7 @@ def user(db):
 
 @pytest.fixture
 def token(client, user):
+    """Добавляем токен"""
     mutation = f"""
         mutation {{
           tokenAuth(username: "{user.username}", password: "12345") {{
@@ -33,6 +36,7 @@ def token(client, user):
 
 @pytest.fixture
 def super_token(client, superuser):
+    """Добавляем токен суперадмина"""
     mutation = f"""
         mutation {{
           tokenAuth(username: "{superuser.username}", password: "12345") {{
@@ -45,6 +49,7 @@ def super_token(client, superuser):
 
 
 def test_all_users_query(client, token):
+    """Проверка получения списка пользователей"""
     all_users_query = """
         query {
           allUsers {
@@ -73,6 +78,7 @@ def test_all_users_query(client, token):
 
 
 def test_registration_mutation(db, client):
+    """Проверка регистрации пользователя"""
     mutation = f"""
     mutation {{
         registration(
@@ -99,6 +105,7 @@ def test_registration_mutation(db, client):
 
 
 def test_delete_user_mutation(db, client, super_token):
+    """Проверка удаления пользователя"""
     user = User.objects.create_user(username='Test', email='test@bk.ru')
 
     mutation = f"""

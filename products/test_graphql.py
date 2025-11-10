@@ -7,11 +7,13 @@ from products.models import Product, Category
 
 @pytest.fixture
 def category(db):
+    """Добавляем фикстуру с категорией товара"""
     return Category.objects.create(name="Test cat 1")
 
 
 @pytest.fixture
 def product(db, category):
+    """Добавляем фикстуру с товаром"""
     return Product.objects.create(
         name='Test prod 1',
         unit='1l',
@@ -22,20 +24,19 @@ def product(db, category):
 
 @pytest.fixture
 def superuser(db):
-    user = User.objects.create_superuser(username="superuser", email="super@user.ru", password="12345")
-    return user
+    """Добавляем суперюзера"""
+    return User.objects.create_superuser(username="superuser", email="super@user.ru", password="12345")
 
 
 @pytest.fixture
 def user(db):
-    user = User.objects.create_user(username="testuser", password="12345")
-    user.profile.city = 'Tver'
-    user.profile.save(update_fields=['city'])
-    return user
+    """Добавляем обычного пользователя"""
+    return User.objects.create_user(username="testuser", password="12345")
 
 
 @pytest.fixture
 def token(client, user):
+    """Добавляем токен"""
     mutation = f"""
         mutation {{
           tokenAuth(username: "{user.username}", password: "12345") {{
@@ -49,6 +50,7 @@ def token(client, user):
 
 @pytest.fixture
 def super_token(client, superuser):
+    """Добавляем токен админа"""
     mutation = f"""
         mutation {{
           tokenAuth(username: "{superuser.username}", password: "12345") {{
@@ -61,6 +63,7 @@ def super_token(client, superuser):
 
 
 def test_all_products_query(db, client, product):
+    """Тест получения всех товаров"""
     query = """
         query {
           allProducts {
@@ -77,6 +80,7 @@ def test_all_products_query(db, client, product):
 
 
 def test_do_not_create_cat_mutation(db, client, token):
+    """Проверка на невозможность создавать категорию не админом"""
     mutation = f"""
     mutation {{
         createCategory(name: "New Cat") {{
@@ -98,6 +102,7 @@ def test_do_not_create_cat_mutation(db, client, token):
 
 
 def test_create_and_delete_product_mutation(db, client, category, super_token):
+    """Проверка создания и удаления товара"""
     mutation = f"""
     mutation {{
         createProduct(categoryId: {category.pk}, name: "New Prod", price: "111.11", unit: "1t") {{
@@ -150,6 +155,7 @@ def test_create_and_delete_product_mutation(db, client, category, super_token):
 
 
 def test_update_product_mutation(db, client, product, super_token):
+    """Проверка изменения товара"""
     mutation = f"""
     mutation {{
         updateProduct(pk: {product.pk}, name: "Changed Prod", price: "555.11", stock: 20) {{
@@ -180,6 +186,7 @@ def test_update_product_mutation(db, client, product, super_token):
 
 
 def test_add_review_mutation(db, client, product, user, token):
+    """Проверка добавления рейтинга для товара"""
     mutation = f"""
     mutation {{
         createReview(productId: {product.pk}, comment: "La-la-la", userId: {user.pk}, rating: 5) {{
