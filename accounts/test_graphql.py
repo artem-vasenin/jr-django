@@ -5,6 +5,12 @@ from django.contrib.auth.models import User
 
 
 @pytest.fixture
+def superuser(db):
+    user = User.objects.create_superuser(username="superuser", email="super@user.ru", password="12345")
+    return user
+
+
+@pytest.fixture
 def user(db):
     user = User.objects.create_user(username="testuser", password="12345")
     user.profile.city = 'Tver'
@@ -17,6 +23,19 @@ def token(client, user):
     mutation = f"""
         mutation {{
           tokenAuth(username: "{user.username}", password: "12345") {{
+            token
+          }}
+        }}
+        """
+    token_response = client.post("/graphql/", data={"query": mutation}, content_type="application/json")
+    return token_response.json()["data"]["tokenAuth"]["token"]
+
+
+@pytest.fixture
+def super_token(client, superuser):
+    mutation = f"""
+        mutation {{
+          tokenAuth(username: "{superuser.username}", password: "12345") {{
             token
           }}
         }}
@@ -77,3 +96,27 @@ def test_registration_mutation(db, client):
     data = json_data["data"]["registration"]["result"]
     assert data["username"] == "newUser"
     assert data["email"] == "new@user.ru"
+
+
+def test_delete_user_mutation(db, client, super_token):
+    user = User.objects.create_user(username='Test', email='test@bk.ru')
+
+    mutation = f"""
+    mutation {{
+        deleteUser(pk: {user.pk}) {{
+            ok
+        }}
+    }}
+    """
+
+    response = client.post(
+        "/graphql/",
+        data={"query": mutation},
+        content_type="application/json",
+        HTTP_AUTHORIZATION=f"JWT {super_token}",
+    )
+    json_data = response.json()
+    assert "errors" not in json_data, json_data.get("errors")
+
+    findedUser = User.objects.filter(username='Test').first()
+    assert findedUser is None
