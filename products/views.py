@@ -9,6 +9,7 @@ from django.db.models import Avg, Count, Q, Value, FloatField
 from .forms import ReviewForm
 from orders.cert_session import Cart
 from .models import Product, Category
+from accounts.mixins import AuthenticatedRequiredMixin
 
 
 class HomeView(View):
@@ -94,7 +95,7 @@ class DetailsView(View):
         return render(request, 'products/details.html', ctx)
 
 
-class AddReviewView(View):
+class AddReviewView(AuthenticatedRequiredMixin, View):
     """ Контроллер добавления оценки и коммента к товару """
     def post(self, request: HttpRequest) -> HttpResponse:
         next_url = request.GET.get('next') or '/'
