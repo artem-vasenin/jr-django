@@ -15,11 +15,13 @@ class Query(
 ):
     ...
 
+
 class Mutation(
     ProductsMutation,
     AuthMutation,
     OrdersMutation,
 ):
     ...
+
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

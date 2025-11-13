@@ -67,8 +67,8 @@ def test_remove_product_from_cart():
 
 
 @pytest.mark.django_db
-def test_remove_product_from_cart():
-    """ Проверка удаления товара из корзины """
+def test_order_from_cart():
+    """ Проверка создания заказа из корзины """
     user = User.objects.get(pk=1)
     profile = getattr(user, 'profile', None)
     product = Product.objects.get(pk=1)

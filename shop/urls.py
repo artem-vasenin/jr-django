@@ -23,10 +23,10 @@ from graphene_django.views import GraphQLView
 from products.views import HomeView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('administrator/', admin.site.urls),
     path("graphql/", GraphQLView.as_view(graphiql=True)),
     path('accounts/', include('accounts.urls')),
-    path('management/', include('management.urls')),
+    path('admin/', include('management.urls')),
     path('products/', include('products.urls')),
     path('orders/', include('orders.urls')),
     path('', HomeView.as_view(), name='home'),
@@ -34,4 +34,7 @@ urlpatterns = [
 
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )

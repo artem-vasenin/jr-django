@@ -18,7 +18,7 @@ class HomeView(View):
         categories = Category.objects.all()
         products = Product.objects.filter(is_active=True).order_by('-created_at')
 
-        q = request.GET.get('q')
+        q = request.GET.get('q') or ''
         sort = request.GET.get('sort')
         if q:
             products = products.filter(Q(name__icontains=q) | Q(description__icontains=q))
