@@ -2,5 +2,6 @@
 .idea
 .env
 .env_local
+static
 media/products
 media/accounts

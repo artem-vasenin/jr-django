@@ -12,8 +12,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
   web:
     build:
@@ -22,12 +20,22 @@ services:
       - .env
     volumes:
       - ./:/app
-      - ./static:/app/static_src
       - ./media:/app/media
-    ports:
-      - "8000:8000"
+      - ./static:/app/static
     depends_on:
       - db
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./static:/app/static
+      - ./media:/app/media
+    depends_on:
+      - web
 
 volumes:
   postgres_data:

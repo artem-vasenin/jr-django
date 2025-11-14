@@ -49,5 +49,10 @@ if __name__ == "__main__":
     # статика
     run(["python", "manage.py", "collectstatic", "--noinput"])
 
-    print("Запускаю Django сервер...")
-    run(["python", "manage.py", "runserver", "0.0.0.0:8000"])
+    print("Запускаю Gunicorn сервер...")
+    run([
+        "gunicorn",
+        "--bind", "0.0.0.0:8000",
+        "shop.wsgi:application",
+        "--workers", "3"
+    ])
