@@ -20,7 +20,7 @@ urlpatterns = [
             template_name='accounts/forgot-password-form.html',
             email_template_name='accounts/forgot-password-email.html',
             subject_template_name='accounts/forgot-password-subject.txt',
-            success_url=reverse_lazy('password_reset_done'),
+            success_url=reverse_lazy('accounts:password_reset_done'),
         ),
         name='forgot',
     ),

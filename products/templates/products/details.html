@@ -83,7 +83,7 @@
 
     <!-- Latest Reviews Section -->
     {% if user.is_authenticated and not cant_review %}
-    <section class="reviews-form-section hide" id="reviews-form-section">
+    <section class="reviews-form-section is-hidden" id="reviews-form-section">
         <div class="review-form">
             <form action="{% url 'products:add-review' %}?next={{ request.path }}" method="post" class="review-form">
                 {% csrf_token %}
@@ -111,8 +111,8 @@
     {% endif %}
 
     <section class="reviews-section">
-      <h2 class="reviews-title">Latest reviews</h2>
         {% if reviews %}
+            <h2 class="reviews-title">Latest reviews</h2>
             <div class="reviews-grid">
             {% for r in reviews %}
                 <div class="review-card">
@@ -139,8 +139,6 @@
                 </div>
             {% endfor %}
             </div>
-        {% else %}
-          <div class="reviews-empty">Reviews list is empty</div>
         {% endif %}
     </section>
   </div>

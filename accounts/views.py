@@ -37,7 +37,7 @@ class UserLoginView(AnonymousRequiredMixin, View):
             user = authenticate(request, username=user.username, password=password)
 
             if user is not None:
-                login(request, user)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('home')
             else:
                 form.add_error(None, 'Неверный email или пароль')
@@ -71,7 +71,7 @@ class RegisterView(AnonymousRequiredMixin, View):
                 return render(request, self.template_name, {'form': form})
 
             user = User.objects.create_user(username=username, email=email, password=password1)
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
             return redirect('home')
 

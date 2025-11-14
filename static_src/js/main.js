@@ -16,12 +16,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Logic for Product Detail Pages (product-*.html) ---
     const productPageContent = document.querySelector('.page-product');
+    const addReviewBtn = document.getElementById('add-review-btn');
+    const reviewFormSection = document.getElementById('reviews-form-section');
     if (productPageContent) {
         // Accordion
         const accordionTitle = document.querySelector('.accordion-title');
         if (accordionTitle) {
             accordionTitle.addEventListener('click', function() {
                 this.closest('.accordion-item').classList.toggle('active');
+            });
+        }
+        if (reviewFormSection) {
+            addReviewBtn.addEventListener('click', function() {
+                reviewFormSection.classList.toggle('is-hidden');
             });
         }
     }

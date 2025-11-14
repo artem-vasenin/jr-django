@@ -83,12 +83,6 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -152,6 +146,7 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 PASSWORD_RESET_TIMEOUT = 60 * 60 * 24 * 3  # 3 дня;
 
 # Email
+
 if config('EMAIL_HOST_USER') and config('EMAIL_HOST_PASSWORD'):
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = config('EMAIL_HOST')
@@ -174,8 +169,8 @@ GRAPHENE = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'graphql_jwt.backends.JSONWebTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'graphql_jwt.backends.JSONWebTokenBackend',
 ]
 
 GRAPHQL_JWT = {

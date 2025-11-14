@@ -31,7 +31,6 @@ def wait_for_db():
 
 
 def run(cmd):
-    """Запуск Django команд."""
     print(f"{cmd}")
     subprocess.run(cmd, shell=False, check=True)
 

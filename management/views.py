@@ -1,10 +1,12 @@
 from django.views import View
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest
+from django.db.models import Sum, F, DecimalField, ExpressionWrapper
 
+from orders.models import Order
 from .forms import CategoryForm, ProductForm
 from products.models import Category, Product, Review
 from accounts.mixins import SuperuserRequiredMixin
@@ -13,7 +15,27 @@ from accounts.mixins import SuperuserRequiredMixin
 class ManagementView(SuperuserRequiredMixin, View):
     """ Контроллер дашборда кастомной админки """
     def get(self, request: HttpRequest) -> HttpResponse:
-        return render(request, 'management/index.html')
+        total_sales = (
+                Order.objects.filter(status=Order.Status.PAID).annotate(
+                    order_total=Sum(
+                        ExpressionWrapper(
+                            F('items__quantity') * F('items__price'), output_field=DecimalField()
+                        )
+                    )
+                )
+                .aggregate(total_sales=Sum('order_total'))
+                .get('total_sales') or 0
+        )
+        total_orders = Order.objects.all().count()
+        total_users = User.objects.all().count()
+        pending_orders = Order.objects.filter(status=Order.Status.PENDING).count()
+        ctx = {
+            'total_sales': total_sales,
+            'total_orders': total_orders,
+            'total_users': total_users,
+            'pending_orders': pending_orders,
+        }
+        return render(request, 'management/index.html', ctx)
 
 
 class ManagementProductsView(SuperuserRequiredMixin, View):
