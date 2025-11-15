@@ -1,3 +1,4 @@
+import logging
 from django.views import View
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -10,6 +11,9 @@ from orders.models import Order
 from .forms import CategoryForm, ProductForm
 from products.models import Category, Product, Review
 from accounts.mixins import SuperuserRequiredMixin
+
+
+logger = logging.getLogger('logs')
 
 
 class ManagementView(SuperuserRequiredMixin, View):
@@ -57,7 +61,8 @@ class ManagementProductView(SuperuserRequiredMixin, View):
         obj = Product.objects.filter(slug=slug).first()
 
         if not obj:
-            messages.error(request, 'Product does not found')
+            messages.error(request, 'Товар не найден')
+            logger.error(f'Менеджмент: Товар не найден')
             return redirect('management:management-products')
 
         initial = {
@@ -81,18 +86,21 @@ class ManagementProductView(SuperuserRequiredMixin, View):
                 form = ProductForm(request.POST, request.FILES, instance=obj)
                 if form.is_valid():
                     form.save()
-                    messages.success(request, 'Product was changed')
+                    logger.info('Менеджмент: Товар был обновлен')
+                    messages.success(request, 'Товар был обновлен')
 
                     return redirect('management:management-products')
             elif request.POST.get('action') == 'hide':
                 obj.is_active = False
                 obj.save(update_fields=['is_active'])
-                messages.success(request, 'Product was hidden')
+                messages.success(request, 'Товар был скрыт')
+                logger.info(f'Менеджмент: Товар ({obj.name}) был скрыт')
 
                 return redirect('management:management-products')
             elif request.POST.get('action') == 'delete':
                 obj.delete()
-                messages.success(request, 'Product deleted successfully')
+                logger.info(f'Менеджмент: Товар ({obj.name}) был удален')
+                messages.success(request, 'Товар был удален')
 
                 return redirect('management:management-products')
 
@@ -112,7 +120,8 @@ class ManagementAddProductView(SuperuserRequiredMixin, View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Product added successfully')
+            messages.success(request, 'Товар создан')
+            logger.info(f'Менеджмент: Товар ({form.name}) создан')
 
             return redirect('management:management-products')
 
@@ -137,7 +146,9 @@ class ManagementCategoryView(SuperuserRequiredMixin, View):
     def get(self, request: HttpRequest, slug: str) -> HttpResponse:
         category = Category.objects.filter(slug=slug).first()
         if not category:
-            messages.error(request, 'Category does not found')
+            messages.error(request, 'Категория не найдена')
+            logger.error(f'Менеджмент: Категория не найдена')
+
             return redirect('management:management-categories')
 
         initial = {'name': category.name, 'parent': category.parent}
@@ -147,14 +158,16 @@ class ManagementCategoryView(SuperuserRequiredMixin, View):
     def post(self, request: HttpRequest, slug: str) -> HttpResponse:
         category = Category.objects.filter(slug=slug).first()
         if not category:
-            messages.error(request, 'Category does not found')
+            messages.error(request, 'Категория не найдена')
+            logger.error(f'Менеджмент: Категория не найдена')
 
             return render(request, self.template_name, {'form': CategoryForm(request.POST)})
 
         form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Category added successfully')
+            messages.success(request, 'Категория изменена')
+            logger.info(f'Менеджмент: Категория ({form.name}) изменена')
 
             return redirect('management:management-categories')
 
@@ -173,7 +186,8 @@ class ManagementAddCategoryView(SuperuserRequiredMixin, View):
         form = CategoryForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Category added successfully')
+            messages.success(request, 'Категория добавлена')
+            logger.info(f'Менеджмент: Категория ({form.name}) добавлена')
 
             return redirect('management:management-categories')
 
@@ -184,9 +198,11 @@ class ManagementDeleteCategoryView(SuperuserRequiredMixin, View):
     """ Контроллер формы удаления категории каст.адм """
     def post(self, request: HttpRequest, pk:int) -> HttpResponse:
         category = Category.objects.filter(pk=pk).first()
+        name = category.name
         if category:
             category.delete()
             messages.success(request, 'Category deleted successfully')
+            logger.info(f'Менеджмент: Категория ({name}) удалена')
 
         return redirect('management:management-categories')
 
@@ -211,6 +227,7 @@ class ManagementUsersView(SuperuserRequiredMixin, View):
             if user:
                 user.is_active = not user.is_active
                 user.save(update_fields=['is_active'])
+                logger.info(f'Менеджмент: Активность пользователя ({user.get_username()}) изменена')
 
         return redirect('management:management-users')
 
@@ -235,5 +252,6 @@ class ManagementReviewsView(SuperuserRequiredMixin, View):
             if review:
                 review.is_active = not review.is_active
                 review.save(update_fields=['is_active'])
+                logger.info(f'Менеджмент: Видимость отзыва изменена')
 
         return redirect('management:management-reviews')

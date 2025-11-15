@@ -1,4 +1,5 @@
 import time
+import logging
 from decimal import Decimal
 from django.views import View
 from django.conf import settings
@@ -16,10 +17,14 @@ from .models import PaymentMethod, Order, OrderItem
 from accounts.mixins import AuthenticatedRequiredMixin
 
 
+logger = logging.getLogger('logs')
+
+
 class CartView(View):
     """ Контроллер корзины товаров """
     def get(self, request: HttpRequest) -> HttpResponse:
         cart = Cart(request)
+
         return render(request, 'orders/cart.html', {'cart': cart})
 
     def post(self, request: HttpRequest) -> HttpResponse:
@@ -27,6 +32,7 @@ class CartView(View):
         product_id = request.POST.get('product_id')
         next_page = request.POST.get('next_page')
         product = get_object_or_404(Product, id=product_id)
+
         if request.POST.get('action') == 'inc':
             if product.stock >= cart.in_cart(product) + 1:
                 cart.change(product)
@@ -97,6 +103,7 @@ class CheckoutView(AuthenticatedRequiredMixin, View):
                             product.save(update_fields=['stock'])
 
                     profile = getattr(request.user, 'profile', None)
+
                     if profile:
                         total = Decimal(order.total_price or 0)
                         if profile.balance >= total > 0:
@@ -106,31 +113,34 @@ class CheckoutView(AuthenticatedRequiredMixin, View):
                             order.save(update_fields=['status'])
 
                     superuser = User.objects.filter(is_superuser=True).first()
+
                     if superuser and superuser.email:
                         send_mail(
-                            subject=f'New order {order.order_id}',
-                            message=f'Added new order from {request.user.username}',
+                            subject=f'Новый заказ: {order.order_id}',
+                            message=f'Добавлен пользователем {request.user.username}',
                             from_email=settings.DEFAULT_FROM_EMAIL,
                             recipient_list=[superuser.email],
                         )
 
                     if request.user.email:
                         send_mail(
-                            subject='Your order is successful',
-                            message=f'thank you for order №{order.order_id}!',
+                            subject='Ваш заказ создан',
+                            message=f'Спасибо за заказ №{order.order_id}!',
                             from_email=settings.DEFAULT_FROM_EMAIL,
                             recipient_list=[request.user.email],
                         )
 
                     cart.clear()
-                    messages.success(request, f'Order {order.order_id} created')
+                    messages.success(request, f'Заказ - {order.order_id} создан')
+                    logger.info(f'Заказы: Заказ - {order.order_id} создан')
+
                     return redirect('home')
 
             except Exception as e:
                 import traceback
                 traceback.print_exc()
-                messages.error(request, f'Order not created: {e}')
-                # messages.error(request, 'Order is not create')
+                messages.error(request, f'Заказ не создан: {e}')
+                logger.error(f'Заказы: Заказ не создан - {e}')
 
         ctx = {'form': form, 'cart': cart}
         return render(request, self.template_name, ctx)
