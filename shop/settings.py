@@ -201,10 +201,22 @@ LOGGING = {
             'maxBytes': 10*1024*1024,
             'backupCount': 5,
         },
+        'api_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'standard',
+            'filename': 'logs/api_logs.log',
+            'maxBytes': 10 * 1024 * 1024,
+            'backupCount': 5,
+        },
     },
     'loggers': {
         'logs': {
             'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'api_logs': {
+            'handlers': ['console', 'api_file'],
             'level': 'INFO',
             'propagate': False,
         }

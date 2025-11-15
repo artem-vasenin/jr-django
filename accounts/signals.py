@@ -1,3 +1,4 @@
+import logging
 from decimal import Decimal
 from django.db import transaction
 from django.dispatch import receiver
@@ -6,6 +7,9 @@ from django.db.models.signals import post_save
 
 from .models import Profile
 from orders.models import Order
+
+
+logger = logging.getLogger('logs')
 
 
 @receiver(post_save, sender=User)
@@ -31,6 +35,7 @@ def orders_paid(sender, instance, created, **kwargs):
     balance = profile.balance or Decimal('0')
 
     with transaction.atomic():
+        cnt = 0
         pending_orders = (
             Order.objects
                 .filter(user=profile.user, status=Order.Status.PENDING)
@@ -42,7 +47,10 @@ def orders_paid(sender, instance, created, **kwargs):
                 o.status = Order.Status.PAID
                 o.save(update_fields=['status'])
                 balance -= total
+                cnt += 1
             else:
                 break
+
+        logger.info(f'Выполнено {cnt} заказов')
 
         Profile.objects.filter(pk=profile.pk).update(balance=balance)

@@ -1,4 +1,5 @@
 import time
+import logging
 import graphene
 from decimal import Decimal
 from django.conf import settings
@@ -6,12 +7,15 @@ from django.db import transaction
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from graphql_jwt.decorators import login_required
 from graphene_django.types import DjangoObjectType
-from graphql_jwt.decorators import login_required, superuser_required
 
 from .cert_session import Cart
 from products.models import Product
 from .models import Order, OrderItem, Payment
+
+
+logger = logging.getLogger('api_logs')
 
 
 class OrderType(DjangoObjectType):
@@ -61,6 +65,7 @@ class Query(graphene.ObjectType):
         try:
             return Order.objects.get(pk=pk)
         except Order.DoesNotExist:
+            logger.error(f'Заказ (ID:{pk}) не найден')
             return None
 
     @staticmethod
@@ -82,6 +87,7 @@ class Query(graphene.ObjectType):
         try:
             return Payment.objects.get(pk=pk)
         except Payment.DoesNotExist:
+            logger.error(f'Платеж (ID:{pk}) не найден')
             return None
 
     @staticmethod
@@ -126,7 +132,8 @@ class CreatePayment(graphene.Mutation):
 
             return CreatePayment(result=payment)
         except Exception as e:
-            raise Exception(f"Payment was not created: {e}")
+            logger.error(f'Платеж не создан: {e}')
+            raise Exception(f"Платеж не создан: {e}")
 
 
 class ChangeCart(graphene.Mutation):
@@ -152,7 +159,8 @@ class ChangeCart(graphene.Mutation):
         elif action == 'del':
             cart.remove(product)
         else:
-            raise Exception('Invalid action')
+            logger.error(f'Неверное действие {action}')
+            raise Exception('Неверное действие')
 
         return ChangeCart(ok=True, cart=cart.cart)
 
@@ -174,7 +182,8 @@ class CreateOrder(graphene.Mutation):
         cart = Cart(request)
 
         if not len(cart):
-            raise Exception('Cart is empty')
+            logger.error('Корзина пуста')
+            raise Exception('Корзина пуста')
 
         try:
             with transaction.atomic():
@@ -200,6 +209,7 @@ class CreateOrder(graphene.Mutation):
                     product.save(update_fields=['stock'])
 
                 profile = getattr(user, 'profile', None)
+
                 if profile:
                     total = Decimal(order.total_price or 0)
                     if profile.balance >= total > 0:
@@ -211,25 +221,27 @@ class CreateOrder(graphene.Mutation):
                 superuser = User.objects.filter(is_superuser=True).first()
                 if superuser and superuser.email:
                     send_mail(
-                        subject=f'New order {order.order_id}',
-                        message=f'Added new order from {user.username}',
+                        subject=f'Новый заказ {order.order_id}',
+                        message=f'Даказ от пользователя {user.username}',
                         from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[superuser.email],
                     )
 
                 if user.email:
                     send_mail(
-                        subject='Your order is successful',
-                        message=f'Thank you for order №{order.order_id}!',
+                        subject='Заказ создан успешно',
+                        message=f'Спасибо за заказ №{order.order_id}!',
                         from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[user.email],
                     )
 
                 cart.clear()
+                logger.info(f'Заказ №{order.order_id} создан')
 
                 return CreateOrder(result=order)
         except Exception as e:
-            raise Exception(f'Order not created: {e}')
+            logger.error(f'Ошибка заказа: {e}')
+            raise Exception(f'Ошибка заказа: {e}')
 
 
 class Mutation(graphene.ObjectType):

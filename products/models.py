@@ -11,6 +11,7 @@ def product_image_path(instance, filename):
     """ Функция создания пути для картинок товаров """
     return os.path.join('products', instance.slug or 'temp', filename)
 
+
 class Category(models.Model):
     """ Модель категории товаров """
     name = models.CharField(max_length=100, unique=True, verbose_name='Название')
@@ -37,6 +38,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+
 class Product(models.Model):
     """ Модель товара """
     name = models.CharField(max_length=100, unique=True, verbose_name='Название')
@@ -58,6 +60,7 @@ class Product(models.Model):
     @property
     def rating(self):
         result = self.reviews.aggregate(avg_rating=Avg('rating'))
+
         return round(result['avg_rating'] or 0)
 
     def __str__(self):
@@ -85,5 +88,6 @@ def pre_save_product_slug(sender, instance, **kwargs):
     """ сигнал добавления слага из названия товара """
     if not instance.slug:
         instance.slug = slugify(instance.name)
+
 
 pre_save.connect(pre_save_product_slug, sender=Product)

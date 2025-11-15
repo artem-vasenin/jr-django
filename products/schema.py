@@ -1,10 +1,14 @@
-import graphene
 import base64
+import logging
+import graphene
 from django.core.files.base import ContentFile
 from graphene_django.types import DjangoObjectType
 from graphql_jwt.decorators import login_required, superuser_required
 
 from .models import Category, Product, Review
+
+
+logger = logging.getLogger('api_logs')
 
 
 class CategoryType(DjangoObjectType):
@@ -46,6 +50,7 @@ class Query(graphene.ObjectType):
         try:
             return Category.objects.get(pk=pk)
         except Category.DoesNotExist:
+            logger.error(f'Категория {pk} не найдена')
             return None
 
     @staticmethod
@@ -59,6 +64,7 @@ class Query(graphene.ObjectType):
         try:
             return Product.objects.get(pk=pk)
         except Product.DoesNotExist:
+            logger.error(f'Товар {pk} не найден')
             return None
 
     @staticmethod
@@ -79,6 +85,8 @@ class CreateCategory(graphene.Mutation):
     @superuser_required
     def mutate(self, info, name, slug=None, parent_id=None):
         obj = Category.objects.create(name=name, slug=slug, parent_id=parent_id)
+        logger.info(f'Категория {name} создана')
+
         return CreateCategory(result=obj)
 
 
@@ -100,8 +108,12 @@ class UpdateCategory(graphene.Mutation):
             obj.slug = slug if slug else obj.slug
             obj.parent_id = parent_id if parent_id else obj.parent_id
             obj.save()
+            logger.info(f'Категория {pk} обновлена')
+
             return UpdateCategory(result=obj)
         except Category.DoesNotExist:
+            logger.error(f'Категория {pk} не найдена')
+
             return UpdateCategory(result=None)
 
 
@@ -117,8 +129,12 @@ class DeleteCategory(graphene.Mutation):
         try:
             obj = Category.objects.get(pk=pk)
             obj.delete()
+            logger.info(f'Категория {pk} удалена')
+
             return DeleteCategory(ok=True)
         except Category.DoesNotExist:
+            logger.error(f'Категория {pk} не найдена')
+
             return DeleteCategory(ok=False)
 
 
@@ -150,6 +166,7 @@ class CreateProduct(graphene.Mutation):
             format, imgstr = image.split(';base64,') if ';base64,' in image else (None, image)
             ext = format.split('/')[-1] if format else 'jpg'
             obj.image.save(f'{obj.pk}.{ext}', ContentFile(base64.b64decode(imgstr)), save=True)
+            logger.info(f'Товар ({obj.name}) создан')
 
         return CreateProduct(result=obj)
 
@@ -191,9 +208,12 @@ class UpdateProduct(graphene.Mutation):
                 format, imgstr = image.split(';base64,') if ';base64,' in image else (None, image)
                 ext = format.split('/')[-1] if format else 'jpg'
                 obj.image.save(f'{obj.pk}.{ext}', ContentFile(base64.b64decode(imgstr)), save=True)
+            logger.info(f'Товар ({obj.name}) обновлен')
 
             return UpdateProduct(result=obj)
         except Product.DoesNotExist:
+            logger.error(f'Товар ({pk}) не найден')
+
             return UpdateProduct(result=None)
 
 
@@ -209,8 +229,12 @@ class DeleteProduct(graphene.Mutation):
         try:
             obj = Product.objects.get(pk=pk)
             obj.delete()
+            logger.info(f'Товар ({pk}) удален')
+
             return DeleteProduct(ok=True)
         except Product.DoesNotExist:
+            logger.error(f'Товар ({pk}) не найден')
+
             return DeleteProduct(ok=False)
 
 
@@ -230,6 +254,8 @@ class CreateReview(graphene.Mutation):
         obj = Review.objects.create(
             comment=comment, user_id=user_id, product_id=product_id, rating=rating, is_active=is_active,
         )
+        logger.info(f'Отзыв на товар ({product_id}) создан')
+
         return CreateReview(result=obj)
 
 
@@ -247,9 +273,12 @@ class UpdateReview(graphene.Mutation):
             obj = Review.objects.get(pk=pk)
             obj.is_active = is_active if is_active else obj.is_active
             obj.save()
+            logger.info(f'Отзыв на товар ({obj.product_id}) обновлен')
 
             return UpdateReview(result=obj)
         except Review.DoesNotExist:
+            logger.error(f'Отзыв ({pk}) не найден')
+
             return UpdateReview(result=None)
 
 

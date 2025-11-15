@@ -1,12 +1,18 @@
+import base64
+import logging
+from tkinter.font import names
+
 import graphene
 import graphql_jwt
-import base64
 from django.core.files.base import ContentFile
 from graphene_django import DjangoObjectType
 from django.contrib.auth.models import User
 from graphql_jwt.decorators import login_required, superuser_required
 
 from .models import Profile
+
+
+logger = logging.getLogger('api_logs')
 
 
 class UserType(DjangoObjectType):
@@ -41,6 +47,8 @@ class Query(graphene.ObjectType):
         try:
             return User.objects.get(pk=pk)
         except User.DoesNotExist:
+            logger.error('Пользователь не найден')
+
             return None
 
     @staticmethod
@@ -49,6 +57,7 @@ class Query(graphene.ObjectType):
         """Получение профиля по PK"""
         profile = Profile.objects.filter(user_id=pk).first()
         if not profile:
+            logger.error('Профиль не найден')
             raise Profile.DoesNotExist
 
 
@@ -72,20 +81,26 @@ class Registration(graphene.Mutation):
 
     def mutate(self, info, username, email, password1, password2):
         if password1 != password2:
-            raise Exception("Passwords do not match")
+            logger.error('Пароли не совпадают')
+            raise Exception("Пароли не совпадают")
         if User.objects.filter(username=username).exists():
-            raise Exception("Username already exists")
+            logger.error('Такой пользователь уже есть')
+            raise Exception("Такой пользователь уже есть")
         if User.objects.filter(email=email).exists():
-            raise Exception('Email already exists')
+            logger.error('Email уже существует')
+            raise Exception('Email уже существует')
         try:
             user = User.objects.create_user(
                 username=username,
                 email=email,
                 password=password1
             )
+            logger.info(f'Пользователь {user.get_username()} зарегистрирован')
+
             return Registration(result=user)
         except Exception as e:
-            raise Exception(f'Registration failed: {e}')
+            logger.error(f'Ошибка регистрации: {e}')
+            raise Exception(f'Ошибка регистрации: {e}')
 
 
 class UpdateProfile(graphene.Mutation):
@@ -112,11 +127,13 @@ class UpdateProfile(graphene.Mutation):
 
         if username:
             if username != user.username and User.objects.filter(username=username).exists():
-                raise Exception('Username already exists')
+                logger.error(f'Такое имя пользователя ({username}) уже занято')
+                raise Exception(f'Такое имя пользователя ({username}) уже занято')
             user.username = username
         if email:
             if email != user.email and User.objects.filter(email=email).exists():
-                raise Exception('Email already exists')
+                logger.error(f'Такой Email ({email}) уже занят')
+                raise Exception(f'Такой Email ({email}) уже занят')
             user.email = email
         if first_name:
             user.first_name = first_name
@@ -139,8 +156,10 @@ class UpdateProfile(graphene.Mutation):
             profile.image.save(f'{user.pk}.{ext}', ContentFile(base64.b64decode(imgstr)), save=True)
         try:
             user.save()
+            logger.info(f'Пользователь ({username}) зарегистрирован')
             return UpdateProfile(result=user)
         except Exception as e:
+            logger.error(f'Ошибка регистрации ({e})')
             raise Exception(f'Registration failed: {e}')
 
 
@@ -155,9 +174,12 @@ class DeleteUser(graphene.Mutation):
     def mutate(self, info, pk):
         try:
             obj = User.objects.get(pk=pk)
+            name = obj.username
             obj.delete()
+            logger.info(f'Пользователь ({name}) удален')
             return DeleteUser(ok=True)
         except User.DoesNotExist:
+            logger.error('Пользователь не найден')
             return DeleteUser(ok=False)
 
 

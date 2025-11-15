@@ -6,7 +6,4 @@ def orders_context(request: HttpRequest):
     """ Контекст для доступа к данным корзины """
     cart = Cart(request)
 
-    return {
-        'cart': cart,
-        'cart_len': len(cart),
-    }
+    return {'cart': cart, 'cart_len': len(cart)}
