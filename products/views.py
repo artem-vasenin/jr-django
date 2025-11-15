@@ -1,3 +1,4 @@
+import logging
 from django.views import View
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -10,6 +11,9 @@ from .forms import ReviewForm
 from orders.cert_session import Cart
 from .models import Product, Category
 from accounts.mixins import AuthenticatedRequiredMixin
+
+
+logger = logging.getLogger('logs')
 
 
 class HomeView(View):
@@ -40,10 +44,12 @@ class HomeView(View):
             products = products.order_by('-created_at')
 
         selected_categories = request.GET.getlist('category')
+
         if selected_categories:
             products = products.filter(category__id__in=selected_categories)
 
         querydict = request.GET.copy()
+
         if 'page' in querydict:
             querydict.pop('page')
         querystring = querydict.urlencode()
@@ -100,10 +106,13 @@ class AddReviewView(AuthenticatedRequiredMixin, View):
     def post(self, request: HttpRequest) -> HttpResponse:
         next_url = request.GET.get('next') or '/'
         form = ReviewForm(request.POST)
+
         if form.is_valid():
             form.save()
-            messages.success(request, 'Rating added successfully')
+            messages.success(request, 'Отзыв успешно добавлен')
+            logger.info('Товары: Отзыв успешно добавлен')
         else:
-            messages.error(request, 'Rating was not saved')
+            messages.error(request, 'Отзыв не добавлен')
+            logger.info('Товары: Отзыв не добавлен')
 
         return redirect(next_url)

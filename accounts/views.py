@@ -1,4 +1,5 @@
 import time
+import logging
 from django.views import View
 from django.db.models import Q
 from django.contrib import messages
@@ -13,12 +14,16 @@ from .forms import UserLoginForm, RegisterForm, AccountForm, BalanceForm, Change
 from orders.models import Order, PaymentMethod, Payment
 
 
+logger = logging.getLogger('logs')
+
+
 class UserLoginView(AnonymousRequiredMixin, View):
     """ Контроллер аутентификации пользователя """
     template_name = 'accounts/login-form.html'
 
     def get(self, request: HttpRequest) -> HttpResponse:
         form = UserLoginForm()
+
         return render(request, self.template_name, {'form': form})
 
     def post(self, request: HttpRequest) -> HttpResponse:
@@ -32,15 +37,20 @@ class UserLoginView(AnonymousRequiredMixin, View):
                 user = User.objects.get(email=email)
             except (User.DoesNotExist, User.MultipleObjectsReturned):
                 form.add_error(None, 'Неверный email или пароль')
+                logger.error(f'Авторизация: Неверный email или пароль {email}')
+
                 return render(request, self.template_name, {'form': form})
 
             user = authenticate(request, username=user.username, password=password)
 
             if user is not None:
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                logger.info(f'Авторизация: Вход пользователя {user.get_username()}')
+
                 return redirect('home')
             else:
                 form.add_error(None, 'Неверный email или пароль')
+                logger.error(f'Авторизация: Неверный email или пароль {email}')
 
         return render(request, self.template_name, {'form': form})
 
@@ -64,13 +74,18 @@ class RegisterView(AnonymousRequiredMixin, View):
 
             if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
                 form.add_error(None, 'Такой email или login уже заняты')
+                logger.error(f'Регистрация: Такой email или login уже заняты {email}, {login}')
+
                 return render(request, self.template_name, {'form': form})
 
             if not password1 == password2:
                 form.add_error(None, 'Ваши пароли не совпадают')
+                logger.error(f'Регистрация: Пароли не совпадают')
+
                 return render(request, self.template_name, {'form': form})
 
             user = User.objects.create_user(username=username, email=email, password=password1)
+            logger.info(f'Регистрация: Пользователь зарегистрирован {user.get_username()}')
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
             return redirect('home')
@@ -82,6 +97,7 @@ class UserLogoutView(View):
     """ Контроллер выхода пользователя """
     def get(self, request: HttpRequest) -> HttpResponse:
         logout(request)
+
         return redirect('accounts:login')
 
 
@@ -115,10 +131,12 @@ class AccountBalanceView(View):
                 )
 
                 messages.success(request, f'Payment #{transaction_id} created')
+                logger.info(f'Пополнение: транзакция - {transaction_id}')
+
                 return redirect('accounts:profile')
             except Exception as e:
-                print('Error', e)
-                messages.error(request, 'Payment was not finished')
+                logger.error(f'Пополнение: Ошибка {e}')
+                messages.error(request, 'Платеж не создан')
 
         return render(request, self.template_name, {'form': form})
 
@@ -152,12 +170,14 @@ class AccountOrdersView(AuthenticatedRequiredMixin, View):
 
         if order_id:
             order = Order.objects.filter(pk=order_id).first()
+
             if order:
                 order.status = Order.Status.CANCELED
                 order.save(update_fields=['status'])
                 request.user.profile.balance += order.total_price
                 request.user.profile.save(update_fields=['balance'])
                 items = order.items.all()
+
                 for i in items:
                     product = i.product
                     product.stock += i.quantity
@@ -178,6 +198,7 @@ class AccountProfileView(AuthenticatedRequiredMixin, View):
             'last_name': getattr(user, 'last_name', ''),
             'email': user.email,
         }
+
         if profile:
             initial['phone'] = getattr(profile, 'phone', '')
             initial['city'] = getattr(profile, 'city', '')
@@ -201,11 +222,15 @@ class AccountProfileView(AuthenticatedRequiredMixin, View):
             image = form_profile.cleaned_data.get('image')
 
             if User.objects.filter(Q(email=email) & ~Q(pk=request.user.pk)).exists():
-                form_profile.add_error(None, 'There is already such an email')
+                form_profile.add_error(None, 'Такой email уже есть')
+                logger.error(f'Профиль: Такой email ({email}) уже есть')
+
                 return render(request, self.template_name, {'form': form_profile})
 
             if User.objects.filter(Q(profile__phone=phone) & ~Q(pk=request.user.pk)).exists():
-                form_profile.add_error(None, 'Such a phone is already occupied')
+                form_profile.add_error(None, 'Такой телефон уже существует')
+                logger.error(f'Профиль: Такой телефон ({phone}) уже есть')
+
                 return render(request, self.template_name, {'form': form_profile})
 
             user = request.user
@@ -220,7 +245,8 @@ class AccountProfileView(AuthenticatedRequiredMixin, View):
                 user.profile.image = image
 
             user.save()
-            messages.success(request, 'Account changed successfully')
+            messages.success(request, 'Профиль успешно изменен')
+            logger.info(f'Профиль: Профиль успешно изменен')
 
             return redirect('accounts:profile')
 
@@ -247,10 +273,12 @@ class AccountSecurityView(AuthenticatedRequiredMixin, View):
             if request.user.check_password(password1):
                 request.user.set_password(password2)
                 request.user.save()
-                messages.success(request, 'Password changed successfully')
+                messages.success(request, 'Пароль успешно изменен')
+                logger.info('Профиль: Пароль успешно изменен')
 
                 return redirect('accounts:login')
             else:
-                messages.error(request, 'Password is not correct')
+                messages.error(request, 'Пароль изменить не удалось')
+                logger.error('Профиль: Пароль изменить не удалось')
 
         return render(request, self.template_name, {'form': form_password})
