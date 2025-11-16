@@ -90,7 +90,7 @@ class DetailsView(View):
             user=user,
             status=Order.Status.PAID,
             items__product_id=obj.pk,
-        ).exists()
+        ).exists() if user.is_authenticated else False
         cart = Cart(request)
         review_form = ReviewForm()
         rating_choices = review_form.fields['rating'].choices
