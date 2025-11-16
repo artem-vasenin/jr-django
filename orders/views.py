@@ -107,10 +107,10 @@ class CheckoutView(AuthenticatedRequiredMixin, View):
                     if profile:
                         total = Decimal(order.total_price or 0)
                         if profile.balance >= total > 0:
-                            profile.balance -= total
-                            profile.save(update_fields=['balance'])
                             order.status = Order.Status.PAID
                             order.save(update_fields=['status'])
+                            profile.balance -= total
+                            profile.save(update_fields=['balance'])
 
                     superuser = User.objects.filter(is_superuser=True).first()
 

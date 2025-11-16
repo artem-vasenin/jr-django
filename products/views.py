@@ -21,7 +21,12 @@ class HomeView(View):
     """ Контроллер домашней страницы-каталога """
     def get(self, request: HttpRequest) -> HttpResponse:
         categories = Category.objects.all()
-        products = Product.objects.filter(is_active=True).order_by('-created_at')
+        products = (Product.objects
+                    .filter(is_active=True)
+                    .select_related('category')
+                    .prefetch_related('reviews')
+                    .order_by('-created_at')
+        )
 
         q = request.GET.get('q') or ''
         sort = request.GET.get('sort')
@@ -86,7 +91,6 @@ class DetailsView(View):
             status=Order.Status.PAID,
             items__product_id=obj.pk,
         ).exists()
-        print(obj.pk, is_bought)
         cart = Cart(request)
         review_form = ReviewForm()
         rating_choices = review_form.fields['rating'].choices

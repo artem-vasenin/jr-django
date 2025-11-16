@@ -26,6 +26,9 @@
                 <div class="checkout-form-group">
                     <label for="phone">{{ form.phone.label }}</label>
                     {{ form.phone }}
+                    {% if form.phone.errors %}
+                        <div class="error">{{ form.phone.errors }}</div>
+                    {% endif %}
                 </div>
                 <div class="checkout-form-group">
                     <label for="city">{{ form.city.label }}</label>
