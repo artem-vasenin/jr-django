@@ -1,7 +1,6 @@
 .venv
 .idea
-.env
-.env_local
+env_local.txt
 static
 media/products
 media/accounts

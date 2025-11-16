@@ -16,8 +16,7 @@ RUN apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/
 
 COPY --from=builder /install /usr/local
 COPY . /app
-RUN rm -f /app/.env
-COPY .env_default /app/.env
+RUN mkdir -p /app/logs && touch /app/logs/logs.log && touch /app/logs/api_logs.log
 COPY docker_entrypoint.py /app/docker_entrypoint.py
 
 RUN pip install gunicorn

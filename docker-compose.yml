@@ -19,7 +19,6 @@ services:
     env_file:
       - .env
     volumes:
-      - ./:/app
       - ./media:/app/media
       - ./static:/app/static
     depends_on:
