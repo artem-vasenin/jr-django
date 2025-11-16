@@ -45,7 +45,12 @@ class CartType(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    all_orders_by_user_id = graphene.List(OrderType, pk=graphene.Int(required=True))
+    all_orders_by_user_id = graphene.List(
+        OrderType,
+        pk=graphene.Int(required=True),
+        limit=graphene.Int(),
+        offset=graphene.Int(),
+    )
     order_by_id = graphene.Field(OrderType, pk=graphene.Int(required=True))
     all_order_items = graphene.List(OrderItemType, pk=graphene.Int(required=True))
     all_payments = graphene.List(PaymentType, pk=graphene.Int(required=True))
@@ -54,9 +59,15 @@ class Query(graphene.ObjectType):
 
     @staticmethod
     @login_required
-    def resolve_all_orders_by_user_id(root, info, pk):
+    def resolve_all_orders_by_user_id(root, info, pk, limit=None, offset=None):
         """Получение всех заказов пользователя"""
-        return Order.objects.filter(user_id=pk).prefetch_related('items')
+        lst = Order.objects.filter(user_id=pk).prefetch_related('items')
+        if offset is not None:
+            lst = lst[offset:]
+        if limit is not None:
+            lst = lst[:limit]
+
+        return lst
 
     @staticmethod
     @login_required

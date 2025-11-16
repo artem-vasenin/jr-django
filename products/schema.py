@@ -35,7 +35,7 @@ class ReviewType(DjangoObjectType):
 class Query(graphene.ObjectType):
     all_cats = graphene.List(CategoryType)
     cat_by_id = graphene.Field(CategoryType, pk=graphene.Int(required=True))
-    all_products = graphene.List(ProductType)
+    all_products = graphene.List(ProductType, limit=graphene.Int(), offset=graphene.Int())
     product_by_id = graphene.Field(ProductType, pk=graphene.Int(required=True))
     all_reviews = graphene.List(ReviewType)
 
@@ -54,9 +54,15 @@ class Query(graphene.ObjectType):
             return None
 
     @staticmethod
-    def resolve_all_products(root, info):
+    def resolve_all_products(root, info, limit=None, offset=None):
         """Получение всех товаров"""
-        return Product.objects.filter(is_active=True).select_related('category').prefetch_related('reviews')
+        lst = Product.objects.filter(is_active=True).select_related('category').prefetch_related('reviews')
+        if offset is not None:
+            lst = lst[offset:]
+        if limit is not None:
+            lst = lst[:limit]
+
+        return lst
 
     @staticmethod
     def resolve_product_by_id(root, info, pk):
