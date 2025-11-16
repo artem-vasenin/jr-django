@@ -2,6 +2,7 @@ import time
 import logging
 import graphene
 from decimal import Decimal
+from graphql import GraphQLError
 from django.conf import settings
 from django.db import transaction
 from django.core.mail import send_mail
@@ -77,7 +78,7 @@ class Query(graphene.ObjectType):
             return Order.objects.get(pk=pk)
         except Order.DoesNotExist:
             logger.error(f'Заказ (ID:{pk}) не найден')
-            return None
+            raise GraphQLError(f'Заказ (ID:{pk}) не найден')
 
     @staticmethod
     @login_required
@@ -99,7 +100,7 @@ class Query(graphene.ObjectType):
             return Payment.objects.get(pk=pk)
         except Payment.DoesNotExist:
             logger.error(f'Платеж (ID:{pk}) не найден')
-            return None
+            raise GraphQLError(f'Платеж (ID:{pk}) не найден')
 
     @staticmethod
     @login_required
@@ -144,7 +145,7 @@ class CreatePayment(graphene.Mutation):
             return CreatePayment(result=payment)
         except Exception as e:
             logger.error(f'Платеж не создан: {e}')
-            raise Exception(f"Платеж не создан: {e}")
+            raise GraphQLError(f"Платеж не создан: {e}")
 
 
 class ChangeCart(graphene.Mutation):
@@ -171,7 +172,7 @@ class ChangeCart(graphene.Mutation):
             cart.remove(product)
         else:
             logger.error(f'Неверное действие {action}')
-            raise Exception('Неверное действие')
+            raise GraphQLError('Неверное действие')
 
         return ChangeCart(ok=True, cart=cart.cart)
 
@@ -194,7 +195,7 @@ class CreateOrder(graphene.Mutation):
 
         if not len(cart):
             logger.error('Корзина пуста')
-            raise Exception('Корзина пуста')
+            raise GraphQLError('Корзина пуста')
 
         try:
             with transaction.atomic():
@@ -252,7 +253,7 @@ class CreateOrder(graphene.Mutation):
                 return CreateOrder(result=order)
         except Exception as e:
             logger.error(f'Ошибка заказа: {e}')
-            raise Exception(f'Ошибка заказа: {e}')
+            raise GraphQLError(f'Ошибка заказа: {e}')
 
 
 class Mutation(graphene.ObjectType):

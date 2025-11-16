@@ -1,6 +1,7 @@
 import base64
 import logging
 import graphene
+from graphql import GraphQLError
 from django.core.files.base import ContentFile
 from graphene_django.types import DjangoObjectType
 from graphql_jwt.decorators import login_required, superuser_required
@@ -51,7 +52,7 @@ class Query(graphene.ObjectType):
             return Category.objects.get(pk=pk)
         except Category.DoesNotExist:
             logger.error(f'Категория {pk} не найдена')
-            return None
+            raise GraphQLError(f'Категория {pk} не найдена')
 
     @staticmethod
     def resolve_all_products(root, info, limit=None, offset=None):
@@ -71,7 +72,7 @@ class Query(graphene.ObjectType):
             return Product.objects.get(pk=pk)
         except Product.DoesNotExist:
             logger.error(f'Товар {pk} не найден')
-            return None
+            raise GraphQLError(f'Товар {pk} не найден')
 
     @staticmethod
     def resolve_all_reviews(root, info):
@@ -119,8 +120,7 @@ class UpdateCategory(graphene.Mutation):
             return UpdateCategory(result=obj)
         except Category.DoesNotExist:
             logger.error(f'Категория {pk} не найдена')
-
-            return UpdateCategory(result=None)
+            raise GraphQLError(f'Категория {pk} не найдена')
 
 
 class DeleteCategory(graphene.Mutation):
@@ -140,8 +140,7 @@ class DeleteCategory(graphene.Mutation):
             return DeleteCategory(ok=True)
         except Category.DoesNotExist:
             logger.error(f'Категория {pk} не найдена')
-
-            return DeleteCategory(ok=False)
+            raise GraphQLError(f'Категория {pk} не найдена')
 
 
 class CreateProduct(graphene.Mutation):
@@ -219,8 +218,7 @@ class UpdateProduct(graphene.Mutation):
             return UpdateProduct(result=obj)
         except Product.DoesNotExist:
             logger.error(f'Товар ({pk}) не найден')
-
-            return UpdateProduct(result=None)
+            raise GraphQLError(f'Товар {pk} не найден')
 
 
 class DeleteProduct(graphene.Mutation):
@@ -240,8 +238,7 @@ class DeleteProduct(graphene.Mutation):
             return DeleteProduct(ok=True)
         except Product.DoesNotExist:
             logger.error(f'Товар ({pk}) не найден')
-
-            return DeleteProduct(ok=False)
+            raise GraphQLError(f'Товар {pk} не найден')
 
 
 class CreateReview(graphene.Mutation):
@@ -284,8 +281,7 @@ class UpdateReview(graphene.Mutation):
             return UpdateReview(result=obj)
         except Review.DoesNotExist:
             logger.error(f'Отзыв ({pk}) не найден')
-
-            return UpdateReview(result=None)
+            raise GraphQLError(f'Отзыв {pk} не найден')
 
 
 class Mutation(graphene.ObjectType):
