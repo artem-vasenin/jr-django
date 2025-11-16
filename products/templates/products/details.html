@@ -82,7 +82,7 @@
     </section>
 
     <!-- Latest Reviews Section -->
-    {% if user.is_authenticated and not cant_review %}
+    {% if not cant_review %}
     <section class="reviews-form-section is-hidden" id="reviews-form-section">
         <div class="review-form">
             <form action="{% url 'products:add-review' %}?next={{ request.path }}" method="post" class="review-form">

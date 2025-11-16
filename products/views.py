@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg, Count, Q, Value, FloatField
 
 from .forms import ReviewForm
+from orders.models import Order
 from orders.cert_session import Cart
 from .models import Product, Category
 from accounts.mixins import AuthenticatedRequiredMixin
@@ -78,15 +79,25 @@ class GuidesView(View):
 class DetailsView(View):
     """ Контроллер детальной инфо товара """
     def get(self, request: HttpRequest, slug: str) -> HttpResponse:
+        user = request.user
         obj = get_object_or_404(Product, slug=slug)
+        is_bought = Order.objects.filter(
+            user=user,
+            status=Order.Status.PAID,
+            items__product_id=obj.pk,
+        ).exists()
+        print(obj.pk, is_bought)
         cart = Cart(request)
-        print(cart.in_cart(obj))
         review_form = ReviewForm()
         rating_choices = review_form.fields['rating'].choices
         reviews = obj.reviews.order_by('-id')[:3]
         cant_review = False
 
-        if request.user.is_authenticated and obj.reviews.filter(user=request.user).exists():
+        if (
+            not user.is_authenticated
+            or (user.is_authenticated and obj.reviews.filter(user=user).exists())
+            or (user.is_authenticated and not is_bought)
+        ):
             cant_review = True
 
         ctx = {

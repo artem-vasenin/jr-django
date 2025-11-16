@@ -28,7 +28,11 @@ GraphQL доступен по адресу:
 
 `python -m venv .venv`
 
+`source .venv/bin/activate`
+
 `pip install -m requirements.txt`
+
+`mkdir logs && touch ./logs/logs.log && touch ./logs/api_logs.log`
 
 `python manage.py runserver`
 
