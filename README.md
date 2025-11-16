@@ -17,6 +17,9 @@
 Проект доступен по адресу:  
 [http://localhost](http://localhost)
 
+GraphQL доступен по адресу:  
+[http://127.0.0.1:8000/graphql](http://127.0.0.1:8000/graphql)
+
 ### Запуск проекта локально
 Предварительно надо добавить в файл .env данные с настойками почты
 Далее необходимо виртуальное окружение для работы с проектом
@@ -39,11 +42,11 @@
 
 Почты для пользователей следующие:
 
-`skobar.manjak@gmail.com`
+`skobar.manjak@gmail.com` - User
 
-`vip.9900@bk.ru`
+`vip.9900@bk.ru` - SuperUser
 
-`artem.skobar@yandex.ru`
+`artem.skobar@yandex.ru` - User
 
 Пароль для всех пользователей один:
 

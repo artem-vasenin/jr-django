@@ -1,8 +1,8 @@
+import os
 import time
 import psycopg2
-from psycopg2 import OperationalError
 import subprocess
-import os
+from psycopg2 import OperationalError
 
 
 def wait_for_db():
@@ -40,6 +40,8 @@ if __name__ == "__main__":
 
     # миграции
     run(["python", "manage.py", "migrate"])
+
+    run(["pytest", "--maxfail=1", "--disable-warnings"])
 
     # фикстуры
     if os.path.exists("db_fixtures.json"):

@@ -1,18 +1,16 @@
 FROM python:3.11-slim AS builder
 
 WORKDIR /build
-
 RUN apt-get update && apt-get install -y gcc libpq-dev && rm -rf /var/lib/apt/lists/*
-
 COPY requirements.txt .
-
 RUN pip install --upgrade pip && pip install --prefix=/install -r requirements.txt
 
 FROM python:3.11-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libpq5 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libtk8.6 tcl8.6 tk8.6-dev && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /install /usr/local
 COPY . /app
