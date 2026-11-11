@@ -1,19 +1,12 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
+from django.shortcuts import render, redirect
 
 
 def index(request):
-    return HttpResponse('Главная страница')
+    data = {'site': 'mysite.com'}
+    return render(request, 'app_blog/index.html', context=data)
 
 
-def products(request):
-    return HttpResponse('Список товаров')
-
-
-def new(request):
-    return HttpResponse('Новые товары')
-
-
-def top(request):
-    return HttpResponse('Наиболее популярные товары')
+def contact(request):
+    return redirect('blog:about')
 

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Главная{% endblock title %}
+
+{% block header %}
+    <nav>
+        <ul>
+            <li><a href="{% url 'blog:about' %}">О нас</a></li>
+            <li><a href="{% url 'blog:contact' %}">Контакты</a></li>
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Главная</h1>
+        <p>Мы разрабатываем эффективные и масштабируемые решения,
+           используя передовые Python-технологии.
+           Позвольте нам помочь вам достичь ваших бизнес-целей
+           с помощью надежного и современного веб-приложения.</p>
+    </div>
+{% endblock %}

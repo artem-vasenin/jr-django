@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}О нас{% endblock title %}
+
+{% block header %}
+    <nav>
+        <ul>
+            <li><a href="{% url 'blog:home' %}">Главная</a></li>
+            <li><a href="{% url 'blog:contact' %}">Контакты</a></li>
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>О нас</h1>
+        <p>Наша команда занимается созданием эффективных и масштабируемых веб-приложений.
+           Мы используем самые современные инструменты и фреймворки,
+           такие как Django и FastAPI, чтобы воплотить ваши идеи в реальность.</p>
+        <h2>Контакты</h2>
+        <p>Телефон: +12345677890</p>
+        <p>Email: admin@admin.com</p>
+    </div>
+{% endblock %}
