@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Список постов{% endblock %}
+
+{% block css %}
+<link href="{% static 'css/blog.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+  <h1>Список постов</h1>
+    {% for post in data %}
+        <h2>
+            <a href="{{ post.get_absolute_url }}"> {{ post.title }}</a>
+        </h2>
+        <p class="date">
+            Опубликовано {{ post.publish }} автором {{ post.author.username }}
+        </p>
+        {{ post.body|linebreaks|truncatewords_html:30 }}
+    {% endfor %}
+{% endblock %}

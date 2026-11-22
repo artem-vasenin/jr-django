@@ -1,0 +1,46 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, .body {
+    height: 100%;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    height: 40px;
+    background: darkslategrey;
+}
+.nav-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.main {
+    margin: 0 40px;
+    flex: 1;
+}
+
+.footer {
+    height: 30px;
+    text-align: center;
+}
