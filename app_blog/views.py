@@ -1,16 +1,23 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.core.paginator import Paginator
+# from django.core.paginator import Paginator
+from django.views.generic import ListView
 
 from .models import Post
 
-def blog_list(request):
-    lst = Post.published.all()
-    page_num = request.GET.get('page', 1)
-    page_limit = request.GET.get('limit', 1)
-    paginator = Paginator(lst, page_limit)
-    data = paginator.get_page(page_num)
-    return render(request, 'app_blog/list.html', {'data': data})
+class BlogListView(ListView):
+    queryset = Post.objects.all()
+    context_object_name = 'data'
+    paginate_by = 1
+    template_name = 'app_blog/list.html'
+
+# def blog_list(request):
+#     lst = Post.published.all()
+#     page_num = request.GET.get('page', 1)
+#     page_limit = request.GET.get('limit', 1)
+#     paginator = Paginator(lst, page_limit)
+#     data = paginator.get_page(page_num)
+#     return render(request, 'app_blog/list.html', {'data': data})
 
 def blog_details(request, year: int, month: int, day: int, slug: str):
     data = get_object_or_404(
