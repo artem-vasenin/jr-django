@@ -18,4 +18,6 @@
         </p>
         {{ post.body|linebreaks|truncatewords_html:30 }}
     {% endfor %}
+
+  {% include 'pagination.html' with page=data %}
 {% endblock %}
