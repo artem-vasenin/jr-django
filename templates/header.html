@@ -1,8 +1,10 @@
+{% load blog_tags %}
+
 <header class="header">
   <nav class="nav">
     <ul class="nav-list">
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'blog:list' %}">Блог</a>
+        <a class="nav-link" href="{% url 'blog:list' %}">Блог ({% total_posts %})</a>
       </li>
     </ul>
   </nav>
