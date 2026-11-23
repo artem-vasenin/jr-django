@@ -1,17 +1,18 @@
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
+from django.db.models import Model
+from django.shortcuts import render, get_object_or_404, redirect
 # from django.core.paginator import Paginator
 from django.views.generic import ListView
 from django.core.mail import send_mail
 from base.env import email
+from django.views.decorators.http import require_POST
 
-from .models import Post
-from .forms import PostEmailForm
+from .models import Post, Comment
+from .forms import PostEmailForm, CommentForm
 
 class BlogListView(ListView):
     queryset = Post.objects.all()
     context_object_name = 'data'
-    paginate_by = 1
+    paginate_by = 3
     template_name = 'app_blog/list.html'
 
 # def blog_list(request):
@@ -48,5 +49,15 @@ def blog_details(request, year: int, month: int, day: int, slug: str):
     return render(
         request,
         'app_blog/details.html',
-        {'data': data, 'form': PostEmailForm()}
+        {'data': data, 'comments': data.comments.all(), 'form': PostEmailForm(), 'commentForm': CommentForm()}
     )
+
+@require_POST
+def post_comment(request, pk: int):
+    post = get_object_or_404(Post, pk=pk)
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.post = post
+        comment.save()
+    return redirect(post.get_absolute_url())

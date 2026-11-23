@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ post.title }}{% endblock %}
+{% block title %}{{ data.title }}{% endblock %}
 
 {% block css %}
 <link href="{% static 'css/blog.css' %}" rel="stylesheet">
@@ -15,10 +15,28 @@
     </p>
     {{ data.body|linebreaks }}
 
-    <form method="post" action="{{ post.get_absolute_url }}" class="blog-form">
+    <h3>Поделиться</h3>
+    <form method="post" action="{{ data.get_absolute_url }}" class="blog-form">
       {% csrf_token %}
       {{ form.as_div }}
       <button type="submit">Поделиться</button>
     </form>
+
+    <h3>Откомментить</h3>
+    <form method="post" action="{% url 'blog:comment' data.pk %}" class="blog-form">
+      {% csrf_token %}
+      {{ commentForm.as_div }}
+      <button type="submit">Откомментить</button>
+    </form>
+
+  <h3>Комменташи</h3>
+  {% for c in comments %}
+    <div class="comment">
+      <div><a href="mailto:{{ c.email }}">{{ c.name }}</a></div>
+      <div>{{ c.body }}</div>
+    </div>
+  {% empty %}
+    <p>А вот нету ничего в коменташах</p>
+  {% endfor %}
   </div>
 {% endblock %}

@@ -1,4 +1,7 @@
-from django.forms import Form, EmailField, CharField, Textarea, TextInput
+from django.forms import (
+    Form, EmailField, CharField, Textarea, TextInput, ModelForm,
+)
+from .models import Comment
 
 
 class PostEmailForm(Form):
@@ -27,3 +30,9 @@ class PostEmailForm(Form):
         required=False,
         label='',
     )
+
+
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('name', 'email', 'body')
