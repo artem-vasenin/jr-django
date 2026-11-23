@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load blog_tags %}
 
 {% block title %}Список постов{% endblock %}
 
@@ -28,7 +29,7 @@
         <p class="date">
           Опубликовано {{ post.publish }} автором {{ post.author.username }}
         </p>
-        {{ post.body|linebreaks|truncatewords_html:30 }}
+        {{ post.body|markdown|truncatewords_html:30 }}
       </div>
     {% endfor %}
 

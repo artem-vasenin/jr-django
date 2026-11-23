@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load blog_tags %}
 
 {% block title %}{{ data.title }}{% endblock %}
 
@@ -13,7 +14,7 @@
     <p class="date">
       Опубликовано {{ data.publish }} автором {{ data.author.username }}
     </p>
-    {{ data.body|linebreaks }}
+    {{ data.body|markdown }}
 
     <h3>Поделиться</h3>
     <form method="post" action="{{ data.get_absolute_url }}" class="blog-form">

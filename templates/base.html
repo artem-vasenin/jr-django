@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/default.min.css">
   <link href="{% static 'css/main.css' %}" rel="stylesheet">
   {% block css %}{% endblock %}
   <title>{% block title %}Default title{% endblock %}</title>
@@ -39,6 +40,8 @@
     &copy; {{ site }} 2023-{% now 'Y' %}. All rights reserved.
   {% endblock %}
 </footer>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
   {% block js %}{% endblock %}
 </body>
 </html>
