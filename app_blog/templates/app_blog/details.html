@@ -1,11 +1,24 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ post.title }}{% endblock %}
 
+{% block css %}
+<link href="{% static 'css/blog.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
+  <div class="blog">
     <h1>{{ data.title }}</h1>
     <p class="date">
-        Опубликовано {{ data.publish }} автором {{ data.author.username }}
+      Опубликовано {{ data.publish }} автором {{ data.author.username }}
     </p>
     {{ data.body|linebreaks }}
+
+    <form method="post" action="{{ post.get_absolute_url }}" class="blog-form">
+      {% csrf_token %}
+      {{ form.as_div }}
+      <button type="submit">Поделиться</button>
+    </form>
+  </div>
 {% endblock %}
