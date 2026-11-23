@@ -38,5 +38,15 @@
   {% empty %}
     <p>А вот нету ничего в коменташах</p>
   {% endfor %}
+
+
+  <h2>Похожие посты</h2>
+    {% for post in filtered_data %}
+        <p>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </p>
+    {% empty %}
+        <p>Исчо нет пахожых пастоф</p>
+    {% endfor %}
   </div>
 {% endblock %}
